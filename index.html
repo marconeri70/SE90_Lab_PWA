@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1220">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>SE90 Lab</title>
+<style>
+:root{--bg:#08111e;--card:#101c2f;--line:#263a57;--text:#eef5ff;--muted:#9db0c9;--green:#38c996;--blue:#66aaff;--amber:#f3b85d}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#07101c,#0c1727 55%,#08111e);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+.app{max-width:980px;margin:auto;padding:18px 14px 46px}.hero{padding:16px 2px 12px}.hero h1{margin:0;font-size:clamp(30px,7vw,48px);letter-spacing:-1.5px}.hero p{margin:7px 0;color:var(--muted);line-height:1.5}.badge{display:inline-block;background:#12362f;color:#88e6c5;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;margin-bottom:10px}
+.card{background:#101c2f;border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 14px 40px rgba(0,0,0,.24)}h2{font-size:19px;margin:0 0 13px}label{display:block;color:var(--muted);font-size:13px;margin:10px 0 6px}
+input,select,button{font:inherit}input,select{width:100%;padding:11px 12px;background:#0a1626;color:var(--text);border:1px solid #314967;border-radius:12px}
+button{border:0;border-radius:12px;padding:11px 14px;background:#213551;color:var(--text);font-weight:800;cursor:pointer}button.primary{background:linear-gradient(135deg,var(--green),#2a9ddd);color:#03151b}button:disabled{opacity:.45}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}@media(max-width:620px){.row{grid-template-columns:1fr}}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:8px 0 2px}@media(max-width:520px){.quick{grid-template-columns:repeat(2,1fr)}}.quick button{padding:10px 6px}
+.check{display:flex;gap:9px;align-items:flex-start;margin:10px 0;font-size:13px;line-height:1.35}.check input{width:auto;margin-top:2px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.notice{border-left:4px solid var(--blue);background:#0b192b;border-radius:10px;padding:10px 12px;color:#c9d6e7;font-size:13px;line-height:1.45}.notice.warn{border-left-color:var(--amber)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}@media(max-width:700px){.kpis{grid-template-columns:repeat(2,1fr)}}.kpi{background:#0b1728;border:1px solid var(--line);border-radius:14px;padding:11px}.kpi b{font-size:19px;display:block}.kpi span{font-size:11px;color:var(--muted)}
+.tickets{display:grid;gap:8px;max-height:560px;overflow:auto;margin-top:12px}.ticket{display:flex;align-items:center;gap:8px;background:#0b1728;border:1px solid var(--line);border-radius:13px;padding:9px}.idx{width:34px;color:var(--muted);font-size:12px}.balls{display:flex;gap:5px;flex-wrap:wrap}.ball{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#1c3553;border:1px solid #3a5e83;font-weight:850;font-size:13px}
+.small{font-size:12px;color:var(--muted);line-height:1.45}.install{display:none}.install.show{display:inline-block}.progress{height:9px;background:#081321;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:12px}.progress i{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--green),var(--blue))}
+footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
+</style>
+</head>
+<body>
+<div class="app">
+<section class="hero">
+<span class="badge">PWA • installabile • offline</span>
+<h1>SE90 Lab</h1>
+<p>Genera sestine, confronta più sistemi e conserva sul telefono il set con la copertura matematica migliore.</p>
+</section>
+
+<section class="card">
+<h2>Generatore rapido</h2>
+
+<label>Budget (€)</label>
+<div class="quick">
+<button data-budget="5">5 €</button>
+<button data-budget="10">10 €</button>
+<button data-budget="20">20 €</button>
+<button data-budget="30">30 €</button>
+</div>
+<div class="row">
+<div><input id="budget" type="number" min="1" max="1000" value="20"></div>
+<div><select id="mode"><option value="best">Miglior copertura</option><option value="coverage">Copertura singola</option><option value="random">Casuale puro</option></select></div>
+</div>
+
+<div class="row">
+<div>
+<label>Quanti sistemi confrontare?</label>
+<select id="tries"><option value="10">10</option><option value="25" selected>25</option><option value="50">50</option><option value="100">100</option></select>
+</div>
+<div>
+<label>Peso equilibrio numeri</label>
+<select id="balance"><option value="0.5">Basso</option><option value="1" selected>Medio</option><option value="2">Alto</option></select>
+</div>
+</div>
+
+<label class="check"><input id="antiPopular" type="checkbox" checked><span>Evita pattern molto popolari e sestine composte solo da numeri 1–31. Questo non aumenta la probabilità di estrazione.</span></label>
+
+<div class="actions">
+<button class="primary" id="generate">Genera il sistema migliore</button>
+<button id="copy" disabled>Copia</button>
+<button id="csv" disabled>CSV</button>
+<button id="save" disabled>Salva sul telefono</button>
+<button id="install" class="install">Installa app</button>
+</div>
+<div class="progress"><i id="bar"></i></div>
+<p class="small" id="workNote">Con “Miglior copertura” vengono generati più sistemi e viene scelto quello con meno sovrapposizioni e migliore distribuzione.</p>
+</section>
+
+<section class="card">
+<div class="kpis">
+<div class="kpi"><b id="count">0</b><span>sestine</span></div>
+<div class="kpi"><b id="odds">—</b><span>probabilità 6</span></div>
+<div class="kpi"><b id="pairs">0</b><span>coppie uniche</span></div>
+<div class="kpi"><b id="score">—</b><span>indice copertura</span></div>
+</div>
+<div class="tickets" id="tickets"><div class="notice">Scegli il budget e premi <b>Genera il sistema migliore</b>.</div></div>
+</section>
+
+<section class="card">
+<h2>Set salvato</h2>
+<div class="actions">
+<button id="loadSaved">Carica ultimo set</button>
+<button id="clearSaved">Cancella salvataggio</button>
+</div>
+<p class="small" id="savedInfo">Nessun set caricato.</p>
+</section>
+
+<section class="card">
+<div class="notice warn"><b>Nota importante:</b> il programma non prevede i numeri. Tutte le sestine hanno la stessa probabilità di uscire. Il vantaggio del software è organizzare meglio il budget evitando combinazioni troppo simili fra loro. L’unico modo diretto per aumentare la probabilità del 6 è giocare più sestine differenti.</div>
+</section>
+
+<footer>SE90 Lab è uno strumento indipendente, statistico e didattico. Verifica sempre costi e regole sul sito ufficiale prima di giocare. Il gioco può causare dipendenza.</footer>
+</div>
+
+<script>
+const TOTAL=622614630;
+const $=id=>document.getElementById(id);
+let tickets=[], deferredPrompt=null;
+const nums90=Array.from({length:90},(_,i)=>i+1);
+const rand=n=>Math.floor(Math.random()*n);
+
+function sample(arr,k){
+ const a=[...arr];
+ for(let i=0;i<k;i++){const j=i+rand(a.length-i);[a[i],a[j]]=[a[j],a[i]]}
+ return a.slice(0,k).sort((a,b)=>a-b)
+}
+function pairKeys(t){let o=[];for(let i=0;i<6;i++)for(let j=i+1;j<6;j++)o.push(t[i]+'-'+t[j]);return o}
+function patternPopular(t){
+ let seq=1,max=1;
+ for(let i=1;i<t.length;i++){if(t[i]===t[i-1]+1){seq++;max=Math.max(max,seq)}else seq=1}
+ const birthdays=t.every(n=>n<=31);
+ const endings=new Set(t.map(n=>n%10)).size<=2;
+ return max>=4 || birthdays || endings;
+}
+function randomTicket(){
+ let t, tries=0;
+ do{t=sample(nums90,6);tries++}while($('antiPopular').checked&&patternPopular(t)&&tries<100);
+ return t
+}
+function generateRandom(count){
+ const out=[],seen=new Set();
+ while(out.length<count){const t=randomTicket(),k=t.join('-');if(!seen.has(k)){seen.add(k);out.push(t)}}
+ return out
+}
+function generateCoverage(count){
+ const out=[],seen=new Set(),pUse=new Map(),nUse=new Map(nums90.map(n=>[n,0]));
+ const candidates=count>100?55:120;
+ for(let z=0;z<count;z++){
+   let best=null,bestScore=Infinity;
+   for(let c=0;c<candidates;c++){
+     const t=randomTicket(),k=t.join('-');if(seen.has(k))continue;
+     let s=0;
+     for(const p of pairKeys(t)){const u=pUse.get(p)||0;s+=u*12+u*u*6}
+     for(const n of t){const u=nUse.get(n)||0;s+=u*0.8+u*u*0.3}
+     s+=Math.random()*0.01;
+     if(s<bestScore){bestScore=s;best=t}
+   }
+   if(!best){best=randomTicket()}
+   const k=best.join('-'); if(seen.has(k))continue;
+   out.push(best);seen.add(k);
+   best.forEach(n=>nUse.set(n,(nUse.get(n)||0)+1));
+   pairKeys(best).forEach(p=>pUse.set(p,(pUse.get(p)||0)+1));
+ }
+ return out
+}
+function metrics(set){
+ const ps=new Map(),freq=new Map(nums90.map(n=>[n,0]));
+ set.forEach(t=>{
+   t.forEach(n=>freq.set(n,freq.get(n)+1));
+   pairKeys(t).forEach(p=>ps.set(p,(ps.get(p)||0)+1))
+ });
+ const uniquePairs=ps.size;
+ const repeats=[...ps.values()].reduce((a,v)=>a+Math.max(0,v-1),0);
+ const vals=[...freq.values()];
+ const mean=set.length*6/90;
+ const variance=vals.reduce((a,v)=>a+(v-mean)*(v-mean),0)/90;
+ const bal=Number($('balance').value);
+ const score=uniquePairs - repeats*2 - variance*bal;
+ return {uniquePairs,repeats,variance,score}
+}
+async function buildBest(){
+ const budget=Math.max(1,Number($('budget').value)||1);
+ const count=Math.floor(budget);
+ const mode=$('mode').value;
+ $('generate').disabled=true;$('bar').style.width='0%';
+ let chosen=null,chosenM=null;
+ if(mode==='random'){
+   chosen=generateRandom(count);chosenM=metrics(chosen);$('bar').style.width='100%';
+ }else if(mode==='coverage'){
+   chosen=generateCoverage(count);chosenM=metrics(chosen);$('bar').style.width='100%';
+ }else{
+   const tries=Number($('tries').value);
+   for(let i=0;i<tries;i++){
+     const s=generateCoverage(count),m=metrics(s);
+     if(!chosen || m.score>chosenM.score){chosen=s;chosenM=m}
+     $('bar').style.width=((i+1)/tries*100)+'%';
+     if(i%4===0) await new Promise(r=>setTimeout(r,0));
+   }
+ }
+ tickets=chosen||[];
+ render(chosenM||metrics(tickets));
+ $('generate').disabled=false
+}
+function render(m){
+ $('count').textContent=tickets.length;
+ $('odds').textContent=tickets.length?'1 su '+Math.round(TOTAL/tickets.length).toLocaleString('it-IT'):'—';
+ $('pairs').textContent=m.uniquePairs.toLocaleString('it-IT');
+ $('score').textContent=Math.round(m.score).toLocaleString('it-IT');
+ const box=$('tickets');box.innerHTML='';
+ tickets.forEach((t,i)=>{
+   const d=document.createElement('div');d.className='ticket';
+   d.innerHTML='<div class="idx">#'+(i+1)+'</div><div class="balls">'+t.map(n=>'<span class="ball">'+n+'</span>').join('')+'</div>';
+   box.appendChild(d)
+ });
+ ['copy','csv','save'].forEach(id=>$(id).disabled=!tickets.length);
+ $('workNote').textContent=`Coppie ripetute: ${m.repeats}. Varianza distribuzione numeri: ${m.variance.toFixed(2)}.`;
+}
+function copySet(){
+ navigator.clipboard.writeText(tickets.map((t,i)=>`${i+1}. ${t.join(' - ')}`).join('\n'))
+}
+function csvSet(){
+ const text='Combinazione;N1;N2;N3;N4;N5;N6\n'+tickets.map((t,i)=>[i+1,...t].join(';')).join('\n');
+ const blob=new Blob([text],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);a.download='SE90_sistema.csv';a.click();URL.revokeObjectURL(a.href)
+}
+function saveSet(){
+ localStorage.setItem('se90_saved',JSON.stringify({date:new Date().toISOString(),budget:$('budget').value,tickets}));
+ $('savedInfo').textContent=`Salvato un set da ${tickets.length} sestine.`
+}
+function loadSaved(){
+ const x=localStorage.getItem('se90_saved'); if(!x){$('savedInfo').textContent='Nessun set salvato.';return}
+ const o=JSON.parse(x);tickets=o.tickets||[];$('budget').value=o.budget||tickets.length;render(metrics(tickets));
+ $('savedInfo').textContent=`Caricato set salvato il ${new Date(o.date).toLocaleString('it-IT')}.`
+}
+function clearSaved(){localStorage.removeItem('se90_saved');$('savedInfo').textContent='Salvataggio cancellato.'}
+
+document.querySelectorAll('[data-budget]').forEach(b=>b.onclick=()=>{$('budget').value=b.dataset.budget});
+$('generate').onclick=buildBest;$('copy').onclick=copySet;$('csv').onclick=csvSet;$('save').onclick=saveSet;$('loadSaved').onclick=loadSaved;$('clearSaved').onclick=clearSaved;
+
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('install').classList.add('show')});
+$('install').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('install').classList.remove('show')};
+
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'))}
+</script>
+</body>
+</html>
