@@ -1,12 +1,12 @@
 {
-  "name": "SE90 Lab v6.2 - Facsimile Stampabile",
+  "name": "SE90 Lab v6.3 - Vincite Storiche",
   "short_name": "SE90 Lab",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07101c",
   "theme_color": "#091423",
-  "description": "Ottimizzatore combinatorio 6 su 90 con storico automatico, match evidenziati e facsimili A4.",
+  "description": "Ottimizzatore 6 su 90 con storico automatico, quote reali per concorso, match evidenziati e facsimili A4.",
   "icons": [
     {
       "src": "icon-192.png",

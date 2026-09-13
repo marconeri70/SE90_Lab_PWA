@@ -1,4 +1,4 @@
-const C='se90-v6-2';const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
+const C='se90-v6-3';const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(CORE))));
 self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
 self.addEventListener('fetch',e=>{

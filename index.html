@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#091423">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>SE90 Lab v6.2 — Facsimile Stampabile</title>
+<title>SE90 Lab v6.3 — Vincite Storiche</title>
 <style>
 :root{--bg:#07101c;--card:#101c2f;--card2:#0b1728;--line:#263a57;--txt:#eef5ff;--muted:#9cb0ca;--green:#39cc98;--blue:#67aaff;--amber:#f2b85e;--red:#ff8585;--violet:#a98bff}
 *{box-sizing:border-box}
@@ -83,12 +83,18 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
   @page{size:A4 portrait;margin:8mm}
 }
 
+
+.prize{font-weight:900;color:#8be1bf;white-space:nowrap}
+.prize.zero{color:var(--muted);font-weight:700}
+.prize-detail{font-size:10px;color:var(--muted);margin-top:3px;max-width:220px;line-height:1.35}
+.prize-missing{font-size:10px;color:var(--amber)}
+
 </style>
 </head>
 <body>
 <div class="app">
 <section class="hero">
-<span class="badge">v6.2 • Facsimile stampabile • storico automatico</span>
+<span class="badge">v6.3 • Vincite storiche • facsimile • auto-history</span>
 <h1>SE90 Lab</h1>
 <p>Ottimizza la copertura con budget fisso e mantiene automaticamente una finestra mobile di almeno 6 mesi di estrazioni ufficiali quando è pubblicata online.</p>
 </section>
@@ -250,6 +256,12 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 <div class="kpi"><b id="histHit4">—</b><span>estrazioni con ≥4</span></div>
 <div class="kpi"><b id="histBest">—</b><span>miglior confronto</span></div>
 </div>
+<div class="kpis" style="margin-bottom:12px">
+<div class="kpi"><b id="histTotalPrize">—</b><span>vincita ipotetica totale</span></div>
+<div class="kpi"><b id="histBestPrize">—</b><span>miglior concorso €</span></div>
+<div class="kpi"><b id="histPrizeDraws">—</b><span>concorsi con premio</span></div>
+<div class="kpi"><b id="histPrizeCoverage">—</b><span>quote premio disponibili</span></div>
+</div>
 
 <div class="tablewrap">
 <table>
@@ -260,14 +272,15 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 <th>Numeri estratti</th>
 <th>Migliore sestina consigliata</th>
 <th>Centrati</th>
+<th>Vincita ipotetica</th>
 </tr>
 </thead>
 <tbody id="historyCompareRows">
-<tr><td colspan="5" class="small">Genera prima un sistema per vedere il confronto.</td></tr>
+<tr><td colspan="6" class="small">Genera prima un sistema per vedere il confronto.</td></tr>
 </tbody>
 </table>
 </div>
-<p class="small">I numeri evidenziati sono quelli presenti sia nell'estrazione storica sia nella migliore sestina consigliata per quel concorso.</p>
+<p class="small">I numeri evidenziati sono quelli presenti sia nell'estrazione storica sia nella migliore sestina consigliata. La vincita ipotetica somma tutte le sestine del sistema che avrebbero ottenuto un premio in quel concorso, usando le quote reali archiviate. Per il 5+1 viene considerato anche il Jolly.</p>
 </section>
 
 
@@ -316,7 +329,7 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 <div class="notice warn"><b>Limite matematico:</b> nessun algoritmo può rendere una specifica sestina più probabile di un'altra in un'estrazione equa. Questa app prova a usare meglio un budget fissato, soprattutto riducendo sovrapposizioni fra le schedine e misurando il risultato contro sistemi casuali equivalenti.</div>
 </section>
 
-<footer>SE90 Lab v6.2 è uno strumento statistico indipendente. Il motore calcola esattamente la copertura del sistema scelto ma usa ricerca euristica per trovarlo. Verifica sempre regole e dati ufficiali. Il gioco può causare dipendenza.</footer>
+<footer>SE90 Lab v6.3 è uno strumento statistico indipendente. Il motore calcola esattamente la copertura del sistema scelto ma usa ricerca euristica per trovarlo. Verifica sempre regole e dati ufficiali. Il gioco può causare dipendenza.</footer>
 </div>
 
 <script>
@@ -499,6 +512,42 @@ function render(m,e,baseScores,baseP3,baseP4,drawN,tries,steps){
 
 
 
+
+function euro(v){
+ if(v===null||v===undefined||Number.isNaN(Number(v)))return '—';
+ return Number(v).toLocaleString('it-IT',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function ticketPrizeCategory(t, d){
+ const h=hit(t,d.nums);
+ if(h===6)return '6';
+ if(h===5 && d.jolly && t.includes(Number(d.jolly)))return '5+1';
+ if(h===5)return '5';
+ if(h===4)return '4';
+ if(h===3)return '3';
+ if(h===2)return '2';
+ return null;
+}
+function hypotheticalPrizeForDraw(d){
+ const hasPrizes=d.prizes && typeof d.prizes==='object';
+ const counts={'2':0,'3':0,'4':0,'5':0,'5+1':0,'6':0};
+ let total=0, computable=hasPrizes;
+ for(const t of tickets){
+   const cat=ticketPrizeCategory(t,d);
+   if(!cat)continue;
+   counts[cat]++;
+   if(!hasPrizes || d.prizes[cat]===null || d.prizes[cat]===undefined){
+     computable=false;
+   }else{
+     total+=Number(d.prizes[cat])||0;
+   }
+ }
+ const parts=[];
+ for(const cat of ['6','5+1','5','4','3','2']){
+   if(counts[cat])parts.push(`${counts[cat]}×${cat}`);
+ }
+ return {total,counts,computable,parts};
+}
+
 function bestTicketForDraw(drawNums){
  let best=null,bh=-1;
  for(let i=0;i<tickets.length;i++){
@@ -523,34 +572,53 @@ function renderHistoryComparison(){
  const body=$('historyCompareRows');
  if(!body)return;
  if(!tickets.length){
-   body.innerHTML='<tr><td colspan="5" class="small">Genera prima un sistema per vedere il confronto.</td></tr>';
+   body.innerHTML='<tr><td colspan="6" class="small">Genera prima un sistema per vedere il confronto.</td></tr>';
    $('histHit2').textContent='—';$('histHit3').textContent='—';$('histHit4').textContent='—';$('histBest').textContent='—';
+   $('histTotalPrize').textContent='—';$('histBestPrize').textContent='—';$('histPrizeDraws').textContent='—';$('histPrizeCoverage').textContent='—';
    return;
  }
  const data=historyDataset();
  const minHit=Number($('historyFilter')?.value||0);
  let c2=0,c3=0,c4=0,best=0,rows=[];
+ let totalPrize=0,bestPrize=0,prizeDraws=0,available=0;
  for(const d of data){
    const r=bestTicketForDraw(d.nums);
    if(r.hit>=2)c2++;if(r.hit>=3)c3++;if(r.hit>=4)c4++;if(r.hit>best)best=r.hit;
+   const hp=hypotheticalPrizeForDraw(d);
+   if(d.prizes)available++;
+   if(hp.computable){
+     totalPrize+=hp.total;
+     if(hp.total>0)prizeDraws++;
+     if(hp.total>bestPrize)bestPrize=hp.total;
+   }
    if(r.hit<minHit)continue;
    const match=(r.ticket||[]).filter(n=>d.nums.includes(n));
    const badgeClass='h'+Math.min(6,Math.max(2,r.hit));
+   let prizeHtml;
+   if(hp.computable){
+     prizeHtml=`<div class="prize ${hp.total<=0?'zero':''}">${euro(hp.total)}</div>${hp.parts.length?`<div class="prize-detail">${hp.parts.join(' + ')}</div>`:''}`;
+   }else{
+     prizeHtml=`<div class="prize-missing">Quote non ancora disponibili</div>${hp.parts.length?`<div class="prize-detail">${hp.parts.join(' + ')}</div>`:''}`;
+   }
    rows.push(`<tr>
      <td>${d.n}</td>
      <td>${d.date}</td>
      <td>${matchBallsHTML(d.nums,match,r.hit)}</td>
      <td>${r.ticket?matchBallsHTML(r.ticket,match,r.hit):'—'}</td>
      <td><span class="hitbadge ${r.hit>=2?badgeClass:''}">${r.hit}/6</span></td>
+     <td>${prizeHtml}</td>
    </tr>`);
  }
  $('histHit2').textContent=`${c2}/${data.length}`;
  $('histHit3').textContent=`${c3}/${data.length}`;
  $('histHit4').textContent=`${c4}/${data.length}`;
  $('histBest').textContent=best+'/6';
- body.innerHTML=rows.length?rows.join(''):`<tr><td colspan="5" class="small">Nessuna estrazione soddisfa il filtro selezionato.</td></tr>`;
+ $('histTotalPrize').textContent=available?euro(totalPrize):'—';
+ $('histBestPrize').textContent=available?euro(bestPrize):'—';
+ $('histPrizeDraws').textContent=available?`${prizeDraws}/${data.length}`:'—';
+ $('histPrizeCoverage').textContent=`${available}/${data.length}`;
+ body.innerHTML=rows.length?rows.join(''):`<tr><td colspan="6" class="small">Nessuna estrazione soddisfa il filtro selezionato.</td></tr>`;
 }
-
 function validHistory(rows){
  return Array.isArray(rows) && rows.length>=30 && rows.every(d=>
    Number.isInteger(Number(d.n)) &&
@@ -580,7 +648,7 @@ async function loadRemoteHistory(force=false){
    const data=await res.json();
    const rows=Array.isArray(data)?data:data.draws;
    if(!validHistory(rows))throw new Error('Archivio non valido');
-   HISTORY=rows.map(d=>({n:Number(d.n),date:d.date,nums:d.nums.map(Number),jolly:d.jolly??null,star:d.star??null}));
+   HISTORY=rows.map(d=>({n:Number(d.n),date:d.date,nums:d.nums.map(Number),jolly:d.jolly??null,star:d.star??null,prizes:d.prizes||null,prize_winners:d.prize_winners||null,detail_url:d.detail_url||null}));
    refreshSplits();
    localStorage.setItem('se90_history_cache',JSON.stringify({updated_at:data.updated_at||new Date().toISOString(),draws:HISTORY}));
    status.textContent=`Storico aggiornato: ${HISTORY.length} concorsi, ultimo n. ${HISTORY[0].n} del ${HISTORY[0].date}.`;

@@ -1,4 +1,4 @@
-# SE90 Lab v6.2 — Storico automatico + facsimile stampabile
+# SE90 Lab v6.3 — Storico automatico + facsimile stampabile
 
 Questa versione mantiene `history.json` aggiornato automaticamente dall'archivio ufficiale SuperEnalotto.
 
@@ -38,3 +38,15 @@ La v6.2 permette di:
 - usare la funzione di stampa del browser per salvare in PDF.
 
 Il facsimile è intenzionalmente non ufficiale e non contiene marchi o codici di convalida.
+
+
+## Vincite storiche reali
+L'aggiornamento automatico recupera anche le quote reali delle categorie 2, 3, 4, 5, 5+1 e 6 dal dettaglio ufficiale di ogni concorso.
+Nel confronto storico l'app:
+- determina tutte le sestine del sistema che avrebbero vinto;
+- riconosce il 5+1 usando anche il Jolly;
+- somma tutte le quote ipotetiche dello stesso concorso;
+- mostra il dettaglio delle categorie vinte;
+- calcola totale ipotetico del periodo e miglior concorso.
+
+Le quote sono importi lordi/ufficiali visualizzati dall'archivio del concorso; eventuali aspetti fiscali o di riscossione non sono calcolati dall'app.
