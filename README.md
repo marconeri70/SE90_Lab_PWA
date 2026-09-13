@@ -1,4 +1,4 @@
-# SE90 Lab v6.1 — Storico automatico + match evidenziati
+# SE90 Lab v6.2 — Storico automatico + facsimile stampabile
 
 Questa versione mantiene `history.json` aggiornato automaticamente dall'archivio ufficiale SuperEnalotto.
 
@@ -29,6 +29,12 @@ La pagina non fa scraping diretto dal browser: molti siti impediscono richieste 
 Lo storico serve a backtest e analisi descrittiva. Non rende più probabili i numeri già usciti o ritardatari.
 
 
-## Evidenziazione dei numeri centrati
-Nel pannello **Storico 6 mesi** ogni estrazione viene confrontata con la migliore sestina del sistema consigliato.
-I numeri presenti in entrambe sono evidenziati in entrambe le colonne. È possibile filtrare i confronti per almeno 2, 3, 4 o 5 numeri centrati e distinguere periodo train e periodo fuori campione.
+## Facsimile stampabile
+La v6.2 permette di:
+- visualizzare l'anteprima delle combinazioni su una griglia 1–90;
+- evidenziare i 6 numeri selezionati;
+- scegliere 4, 6 o 8 facsimili per pagina A4;
+- stampare tutte le combinazioni o solo le prime 5, 10 o 20;
+- usare la funzione di stampa del browser per salvare in PDF.
+
+Il facsimile è intenzionalmente non ufficiale e non contiene marchi o codici di convalida.

@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#091423">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>SE90 Lab v6.1 — Match Evidenziati</title>
+<title>SE90 Lab v6.2 — Facsimile Stampabile</title>
 <style>
 :root{--bg:#07101c;--card:#101c2f;--card2:#0b1728;--line:#263a57;--txt:#eef5ff;--muted:#9cb0ca;--green:#39cc98;--blue:#67aaff;--amber:#f2b85e;--red:#ff8585;--violet:#a98bff}
 *{box-sizing:border-box}
@@ -51,12 +51,44 @@ button.primary{background:linear-gradient(135deg,var(--green),#2c9fd9);color:#03
 .meter{height:13px;background:#081321;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:6px}.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--green))}
 .compare{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}@media(max-width:700px){.compare{grid-template-columns:1fr}}.compare .box{background:var(--card2);border:1px solid var(--line);border-radius:13px;padding:11px}.compare .box b{font-size:18px}.compare .box span{display:block;font-size:11px;color:var(--muted);margin-top:4px}
 footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
+
+.print-tools{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+@media(max-width:700px){.print-tools{grid-template-columns:1fr}}
+.print-preview{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+@media(max-width:760px){.print-preview{grid-template-columns:1fr}}
+.facsimile-card{background:#fff;color:#111;border:2px solid #111;border-radius:10px;padding:10px}
+.facsimile-head{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:7px;font-size:12px;font-weight:800}
+.facsimile-sub{font-size:10px;color:#444;margin-bottom:8px}
+.num-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:3px}
+.num-cell{aspect-ratio:1/1;border:1px solid #888;border-radius:50%;display:grid;place-items:center;font-size:9px;font-weight:700;background:#fff}
+.num-cell.sel{background:#111;color:#fff;border-color:#111}
+.facsimile-note{margin-top:7px;font-size:9px;color:#444}
+#printArea{display:none}
+@media print{
+  body{background:#fff!important;color:#000!important}
+  body *{visibility:hidden!important}
+  #printArea,#printArea *{visibility:visible!important}
+  #printArea{display:block!important;position:absolute;left:0;top:0;width:100%;padding:8mm}
+  .print-page{page-break-after:always;display:grid;gap:5mm}
+  .print-page:last-child{page-break-after:auto}
+  .print-page.cols2{grid-template-columns:1fr 1fr}
+  .print-page.cols1{grid-template-columns:1fr}
+  .print-card{border:1.5px solid #000;border-radius:4mm;padding:4mm;break-inside:avoid}
+  .print-head{display:flex;justify-content:space-between;font-size:10pt;font-weight:700;margin-bottom:2mm}
+  .print-sub{font-size:8pt;margin-bottom:2mm}
+  .print-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:1.1mm}
+  .print-num{aspect-ratio:1/1;border:0.3mm solid #555;border-radius:50%;display:grid;place-items:center;font-size:7pt;font-weight:700}
+  .print-num.sel{background:#000!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .print-foot{font-size:7pt;margin-top:2mm;color:#333}
+  @page{size:A4 portrait;margin:8mm}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
 <section class="hero">
-<span class="badge">v6.1 • Match evidenziati • storico automatico</span>
+<span class="badge">v6.2 • Facsimile stampabile • storico automatico</span>
 <h1>SE90 Lab</h1>
 <p>Ottimizza la copertura con budget fisso e mantiene automaticamente una finestra mobile di almeno 6 mesi di estrazioni ufficiali quando è pubblicata online.</p>
 </section>
@@ -238,11 +270,53 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 <p class="small">I numeri evidenziati sono quelli presenti sia nell'estrazione storica sia nella migliore sestina consigliata per quel concorso.</p>
 </section>
 
+
+<section class="card">
+<h2>8. Facsimile schedine stampabili</h2>
+<p class="small">Genera un facsimile non ufficiale con la griglia 1–90 e i 6 numeri selezionati evidenziati. Puoi stamparlo oppure salvarlo in PDF dal browser.</p>
+<div class="print-tools">
+<div>
+<label>Schedine per pagina</label>
+<select id="printPerPage">
+<option value="4">4 per pagina</option>
+<option value="6" selected>6 per pagina</option>
+<option value="8">8 per pagina</option>
+</select>
+</div>
+<div>
+<label>Quante combinazioni stampare</label>
+<select id="printHowMany">
+<option value="all" selected>Tutte</option>
+<option value="5">Prime 5</option>
+<option value="10">Prime 10</option>
+<option value="20">Prime 20</option>
+</select>
+</div>
+<div>
+<label>Formato</label>
+<select id="printFormat">
+<option value="compact" selected>Compatto</option>
+<option value="large">Grande</option>
+</select>
+</div>
+</div>
+<div class="actions">
+<button id="previewPrint" disabled>Anteprima facsimile</button>
+<button class="primary" id="printFacsimile" disabled>Stampa / Salva PDF</button>
+</div>
+<div id="printPreview" class="print-preview">
+<div class="notice">Genera prima un sistema, poi premi <b>Anteprima facsimile</b>.</div>
+</div>
+<p class="small">Facsimile indipendente: non contiene marchi, codici a barre o elementi destinati alla convalida in ricevitoria.</p>
+</section>
+
+<div id="printArea"></div>
+
 <section class="card">
 <div class="notice warn"><b>Limite matematico:</b> nessun algoritmo può rendere una specifica sestina più probabile di un'altra in un'estrazione equa. Questa app prova a usare meglio un budget fissato, soprattutto riducendo sovrapposizioni fra le schedine e misurando il risultato contro sistemi casuali equivalenti.</div>
 </section>
 
-<footer>SE90 Lab v6.1 è uno strumento statistico indipendente. Il motore calcola esattamente la copertura del sistema scelto ma usa ricerca euristica per trovarlo. Verifica sempre regole e dati ufficiali. Il gioco può causare dipendenza.</footer>
+<footer>SE90 Lab v6.2 è uno strumento statistico indipendente. Il motore calcola esattamente la copertura del sistema scelto ma usa ricerca euristica per trovarlo. Verifica sempre regole e dati ufficiali. Il gioco può causare dipendenza.</footer>
 </div>
 
 <script>
@@ -406,7 +480,7 @@ function render(m,e,baseScores,baseP3,baseP4,drawN,tries,steps){
  $('mcInfo').textContent=`Stime su ${drawN.toLocaleString('it-IT')} estrazioni simulate condivise con il benchmark casuale.`;
  const box=$('tickets');box.innerHTML='';
  tickets.forEach((t,i)=>{const d=document.createElement('div');d.className='ticket';d.innerHTML=`<div class="idx">#${i+1}</div><div class="balls">${t.map(n=>`<span class="ball">${n}</span>`).join('')}</div>`;box.appendChild(d)});
- ['copy','csv','save'].forEach(id=>$(id).disabled=false);
+ ['copy','csv','save','previewPrint','printFacsimile'].forEach(id=>$(id).disabled=false);
 
  const myScore=objectiveEst(e),pct=percentile(myScore,baseScores),p3=percentile(e.p3,baseP3),p4=percentile(e.p4,baseP4);
  $('percentile').textContent=pct.toFixed(1)+'° percentile';$('percentileBar').style.width=pct+'%';
@@ -542,6 +616,53 @@ function renderProbTable(e){
  }
  $('probRows').innerHTML=rows
 }
+
+function selectedPrintTickets(){
+ let n=tickets.length;
+ const how=$('printHowMany')?.value||'all';
+ if(how!=='all')n=Math.min(n,Number(how));
+ return tickets.slice(0,n);
+}
+function facsimileGridHTML(t, clsCell='num-cell', clsSel='sel'){
+ const s=new Set(t);let out='';
+ for(let n=1;n<=90;n++)out+=`<span class="${clsCell} ${s.has(n)?clsSel:''}">${n}</span>`;
+ return out;
+}
+function renderPrintPreview(){
+ const arr=selectedPrintTickets(),box=$('printPreview');
+ if(!arr.length){box.innerHTML='<div class="notice">Nessuna combinazione disponibile.</div>';return}
+ box.innerHTML=arr.slice(0,Math.min(8,arr.length)).map((t,i)=>`
+   <div class="facsimile-card">
+     <div class="facsimile-head"><span>Facsimile SE90 Lab</span><span>#${i+1}</span></div>
+     <div class="facsimile-sub">Combinazione: ${t.join(' - ')}</div>
+     <div class="num-grid">${facsimileGridHTML(t)}</div>
+     <div class="facsimile-note">Facsimile non ufficiale — promemoria combinazione.</div>
+   </div>`).join('');
+}
+function buildPrintArea(){
+ const arr=selectedPrintTickets();
+ const perPage=Number($('printPerPage').value||6);
+ const format=$('printFormat').value||'compact';
+ const cols=(format==='large'||perPage<=4)?1:2;
+ const pages=[];
+ for(let i=0;i<arr.length;i+=perPage)pages.push(arr.slice(i,i+perPage));
+ $('printArea').innerHTML=pages.map((page,pi)=>`
+   <div class="print-page ${cols===2?'cols2':'cols1'}">
+     ${page.map((t,j)=>`
+       <div class="print-card">
+         <div class="print-head"><span>SE90 Lab — Facsimile</span><span>#${pi*perPage+j+1}</span></div>
+         <div class="print-sub">Numeri: <b>${t.join(' - ')}</b></div>
+         <div class="print-grid">${facsimileGridHTML(t,'print-num','sel')}</div>
+         <div class="print-foot">Facsimile non ufficiale. Nessun valore di giocata o convalida.</div>
+       </div>`).join('')}
+   </div>`).join('');
+}
+function printFacsimiles(){
+ if(!tickets.length)return;
+ buildPrintArea();
+ window.print();
+}
+
 function updateBudgetGuard(){
  const lim=Math.max(0,Number($('monthlyLimit').value)||0),spent=Math.max(0,Number($('monthlySpent').value)||0),b=Math.max(0,Number($('budget').value)||0);
  if(lim>0&&spent+b>lim)$('status').textContent=`Attenzione: questa giocata porterebbe la spesa mensile a ${spent+b} €, oltre il limite di ${lim} €.`;
@@ -559,6 +680,11 @@ function save(){
 document.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{$('budget').value=b.dataset.b;updateBudgetGuard()});
 $('budget').oninput=updateBudgetGuard;$('monthlyLimit').oninput=updateBudgetGuard;$('monthlySpent').oninput=updateBudgetGuard;
 $('generate').onclick=optimize;$('copy').onclick=copySet;$('csv').onclick=csv;$('save').onclick=save;
+$('previewPrint').onclick=renderPrintPreview;
+$('printFacsimile').onclick=printFacsimiles;
+$('printPerPage').onchange=()=>{if(tickets.length)renderPrintPreview()};
+$('printHowMany').onchange=()=>{if(tickets.length)renderPrintPreview()};
+$('printFormat').onchange=()=>{if(tickets.length)renderPrintPreview()};
 $('monthlySpent').value=localStorage.getItem('se90_monthlySpent')||'0';$('monthlyLimit').value=localStorage.getItem('se90_monthlyLimit')||'100';
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')});
 $('refreshHistory').onclick=()=>loadRemoteHistory(true);
