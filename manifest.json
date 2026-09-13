@@ -1,12 +1,12 @@
 {
-  "name": "SE90 Lab v4 - Budget Ottimale",
+  "name": "SE90 Lab v5 - Motore Combinatorio",
   "short_name": "SE90 Lab",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07101c",
   "theme_color": "#091423",
-  "description": "Ottimizzatore di sistemi 6 su 90 con backtest semestrale e simulazione Monte Carlo.",
+  "description": "Ottimizzatore combinatorio 6 su 90 con benchmark casuale e validazione fuori campione.",
   "icons": [
     {
       "src": "icon-192.png",
