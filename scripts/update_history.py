@@ -27,7 +27,7 @@ def euro_value(text):
     if not m:return None
     return float(m.group(1).replace(".","").replace(",", "."))
 
-def month_iter(end_date, months_back=8):
+def month_iter(end_date, months_back=26):
     y,m=end_date.year,end_date.month
     out=[]
     for _ in range(months_back):
@@ -91,7 +91,7 @@ def main():
     existing=load_existing()
     all_draws={}
     errors=[]
-    for y,m in month_iter(date.today(),8):
+    for y,m in month_iter(date.today(),26):
         try:
             for d in parse_month(y,m):all_draws[(d["n"],d["date"])]=d
         except Exception as e:errors.append(f"archivio {y}-{m:02d}: {e}")
@@ -100,9 +100,9 @@ def main():
 
     rows=sorted(all_draws.values(),key=lambda x:(x["date"],x["n"]),reverse=True)
     latest=datetime.strptime(rows[0]["date"],"%Y-%m-%d").date()
-    cutoff=latest-timedelta(days=183)
+    cutoff=latest-timedelta(days=731)
     rows=[d for d in rows if datetime.strptime(d["date"],"%Y-%m-%d").date()>=cutoff]
-    if len(rows)<60:raise SystemExit(f"Archivio sospetto: solo {len(rows)} concorsi.")
+    if len(rows)<200:raise SystemExit(f"Archivio sospetto: solo {len(rows)} concorsi.")
 
     enriched=[]
     for i,d in enumerate(rows):
@@ -125,7 +125,7 @@ def main():
     payload={
       "updated_at":datetime.now(timezone.utc).isoformat().replace("+00:00","Z"),
       "source":"https://www.superenalotto.it/archivio-estrazioni",
-      "window":"rolling_183_days_from_latest_official_draw",
+      "window":"rolling_731_days_from_latest_official_draw",
       "latest":{"n":enriched[0]["n"],"date":enriched[0]["date"]},
       "count":len(enriched),
       "draws":enriched
