@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#091423">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>SE90 Lab v3 — Analisi 6 mesi</title>
+<title>SE90 Lab v4 — Budget Ottimale</title>
 <style>
 :root{--bg:#07101c;--card:#101c2f;--card2:#0b1728;--line:#263a57;--txt:#eef5ff;--muted:#9cb0ca;--green:#39cc98;--blue:#67aaff;--amber:#f2b85e;--red:#ff8585}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#06101c,#0b1727 55%,#07101c);color:var(--txt);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -27,9 +27,9 @@ label{display:block;color:var(--muted);font-size:13px;margin:10px 0 6px}input,se
 <body>
 <div class="app">
 <section class="hero">
-<span class="badge">v3 • 105 estrazioni • 6 mesi</span>
+<span class="badge">v4 • Budget Ottimale • 105 estrazioni • 6 mesi</span>
 <h1>SE90 Lab</h1>
-<p>Massima copertura delle giocate + confronto retrospettivo con i concorsi dal 13 marzo all'11 settembre 2026.</p>
+<p>Ottimizzazione del budget, confronto fino a 1.000 sistemi, simulazione prospettica e backtest sui concorsi dal 13 marzo all'11 settembre 2026.</p>
 </section>
 
 <section class="card">
@@ -38,16 +38,39 @@ label{display:block;color:var(--muted);font-size:13px;margin:10px 0 6px}input,se
 <div class="quick"><button data-b="5">5 €</button><button data-b="10">10 €</button><button data-b="20">20 €</button><button data-b="30">30 €</button></div>
 <div class="row">
 <div><input id="budget" type="number" min="1" max="500" value="20"></div>
-<div><select id="mode"><option value="coverage">Massima copertura — consigliata</option><option value="history">Confronto storico 6 mesi</option><option value="random">Casuale puro</option></select></div>
+<div><select id="mode">
+<option value="optimal" selected>Budget Ottimale — consigliata</option>
+<option value="coverage">Massima copertura combinatoria</option>
+<option value="history">Confronto storico 6 mesi</option>
+<option value="random">Casuale puro</option>
+</select></div>
 </div>
 <div class="row">
-<div><label>Sistemi candidati da confrontare</label><select id="tries"><option>20</option><option selected>50</option><option>100</option><option>200</option></select></div>
-<div><label>Obiettivo premi minori</label><select id="target"><option value="spread" selected>Distribuzione ampia (2/3/4)</option><option value="triples">Più terne diverse</option><option value="pairs">Più coppie diverse</option></select></div>
+<div><label>Sistemi candidati da confrontare</label><select id="tries">
+<option>100</option><option selected>250</option><option>500</option><option>1000</option>
+</select></div>
+<div><label>Obiettivo principale</label><select id="target">
+<option value="balanced" selected>Bilanciato: almeno 2/3/4</option>
+<option value="three">Privilegia almeno 3</option>
+<option value="four">Privilegia almeno 4</option>
+<option value="spread">Massima varietà coppie/terne</option>
+</select></div>
+</div>
+<div class="row">
+<div><label>Precisione simulazione finale</label><select id="precision">
+<option value="2000">Rapida — 2.000 estrazioni</option>
+<option value="5000" selected>Normale — 5.000 estrazioni</option>
+<option value="10000">Alta — 10.000 estrazioni</option>
+<option value="20000">Molto alta — 20.000 estrazioni</option>
+</select></div>
+<div><label>Finalisti da simulare</label><select id="finalists">
+<option value="10">10</option><option value="20" selected>20</option><option value="30">30</option><option value="40">40</option>
+</select></div>
 </div>
 <label class="check"><input id="antiPopular" type="checkbox" checked><span>Evita pattern molto popolari (sequenze evidenti e sestine tutte entro 1–31). Non cambia la probabilità di uscita, ma può ridurre la possibilità di condividere un eventuale premio.</span></label>
 <div class="actions"><button class="primary" id="generate">Genera e confronta</button><button id="copy" disabled>Copia</button><button id="csv" disabled>CSV</button><button id="save" disabled>Salva</button><button id="install" class="install">Installa app</button></div>
 <div class="progress"><i id="bar"></i></div>
-<p class="small" id="status">La modalità consigliata sceglie il sistema con la maggiore copertura combinatoria, senza attribuire poteri predittivi allo storico.</p>
+<p class="small" id="status">Budget Ottimale: prima classifica fino a 1.000 sistemi per copertura, poi simula i migliori sulle stesse estrazioni casuali per stimare la probabilità di almeno 2, 3 e 4.</p>
 </section>
 
 <section class="card">
@@ -58,6 +81,17 @@ label{display:block;color:var(--muted);font-size:13px;margin:10px 0 6px}input,se
 <div class="kpi"><b id="utriples">0</b><span>terne uniche</span></div>
 </div>
 <div class="tickets" id="tickets"><div class="notice">Premi <b>Genera e confronta</b>.</div></div>
+</section>
+
+<section class="card">
+<h2>Stima prospettica del sistema scelto</h2>
+<div class="kpis">
+<div class="kpi"><b id="mc2">—</b><span>almeno un 2</span></div>
+<div class="kpi"><b id="mc3">—</b><span>almeno un 3</span></div>
+<div class="kpi"><b id="mc4">—</b><span>almeno un 4</span></div>
+<div class="kpi"><b id="mcN">—</b><span>estrazioni simulate</span></div>
+</div>
+<p class="small" id="mcNote">Queste percentuali sono stime Monte Carlo, non garanzie. Tutti i sistemi finalisti vengono valutati sulle stesse estrazioni simulate.</p>
 </section>
 
 <div class="tabs">
@@ -94,11 +128,11 @@ label{display:block;color:var(--muted);font-size:13px;margin:10px 0 6px}input,se
 <section class="card panel" id="math">
 <h2>4. Dove aumentano davvero le possibilità</h2>
 <div class="notice warn"><b>Per il 6:</b> con N sestine tutte diverse, la probabilità è N / 622.614.630. A parità di N, nessun algoritmo può rendere il 6 più probabile scegliendo “numeri migliori”.</div>
-<p class="small">L'ottimizzatore può invece diminuire le sovrapposizioni fra le schedine e aumentare la varietà di coppie e terne coperte. Questo è l'obiettivo sensato quando il budget è fisso e si vuole distribuire meglio la possibilità di premi inferiori.</p>
+<p class="small">L'ottimizzatore può diminuire le sovrapposizioni fra le schedine, aumentare la varietà di coppie e terne e confrontare sistemi diversi con simulazioni identiche. Questo può migliorare la distribuzione della copertura dei premi inferiori, ma non crea numeri più probabili.</p>
 <div id="budgetMath" class="notice"></div>
 </section>
 
-<footer>Archivio incorporato: concorsi 42–146 del 2026. SE90 Lab è indipendente e non collegato a Sisal/ADM. Verifica sempre i dati ufficiali prima di giocare. Il gioco può causare dipendenza.</footer>
+<footer>Archivio incorporato: concorsi 42–146 del 2026. La modalità Budget Ottimale usa simulazioni prospettiche indipendenti dallo storico. SE90 Lab è indipendente e non collegato a Sisal/ADM. Verifica sempre i dati ufficiali prima di giocare. Il gioco può causare dipendenza.</footer>
 </div>
 
 <script>
@@ -153,39 +187,119 @@ function backtest(set){
  }
  return {c2,c3,c4,best,detail}
 }
-function combinedScore(set, mode){
+function combinatorialScore(set, mode){
  const m=metrics(set);
  let s=m.pairs*1.0+m.triples*1.9-m.variance*3;
  if(mode==='history'){
    const b=backtest(set);
-   // Lo storico pesa solo come tie-breaker moderato, per evitare overfitting.
-   s += b.c2*0.15+b.c3*0.8+b.c4*4;
+   // Lo storico resta un tie-breaker moderato per evitare overfitting.
+   s += b.c2*0.12+b.c3*0.65+b.c4*3.2;
  }
  return {score:s,m}
 }
+function makeDrawPool(n){
+ const out=[];
+ for(let i=0;i<n;i++)out.push(sample(nums90,6));
+ return out
+}
+function estimateOnDraws(set, draws){
+ const sets=set.map(t=>new Set(t));
+ let c2=0,c3=0,c4=0,c5=0;
+ for(const d of draws){
+   let best=0;
+   for(const s of sets){
+     let h=0;
+     for(const n of d)if(s.has(n))h++;
+     if(h>best)best=h;
+     if(best===6)break;
+   }
+   if(best>=2)c2++;
+   if(best>=3)c3++;
+   if(best>=4)c4++;
+   if(best>=5)c5++;
+ }
+ const n=draws.length;
+ return {n,c2,c3,c4,c5,p2:c2/n,p3:c3/n,p4:c4/n,p5:c5/n}
+}
+function mcScore(e){
+ const target=$('target').value;
+ if(target==='three') return e.p2*0.2 + e.p3*10 + e.p4*35;
+ if(target==='four') return e.p2*0.05 + e.p3*4 + e.p4*120;
+ if(target==='spread') return e.p2*0.5 + e.p3*5 + e.p4*25;
+ return e.p2*0.35 + e.p3*8 + e.p4*70;
+}
+function fmtPct(p){return (p*100).toFixed(p<0.001?3:2)+'%'}
 async function generate(){
- const budget=Math.max(1,Math.min(500,Number($('budget').value)||1)),count=Math.floor(budget),mode=$('mode').value;
+ const budget=Math.max(1,Math.min(500,Number($('budget').value)||1));
+ const count=Math.floor(budget),mode=$('mode').value;
  const tries=mode==='random'?1:Number($('tries').value);
+ const finalistCount=Math.min(Number($('finalists').value),tries);
+ const precision=Number($('precision').value);
  $('generate').disabled=true;$('bar').style.width='0%';
- let best=null,bestObj=null;
+ $('mc2').textContent='—';$('mc3').textContent='—';$('mc4').textContent='—';$('mcN').textContent='—';
+
+ // Fase 1: molti candidati, valutazione combinatoria economica.
+ let top=[];
  for(let i=0;i<tries;i++){
    const s=mode==='random'?randomSet(count):coverageSet(count);
-   const o=combinedScore(s,mode);
-   if(!best||o.score>bestObj.score){best=s;bestObj=o}
-   $('bar').style.width=((i+1)/tries*100)+'%';
-   if(i%4===0)await new Promise(r=>setTimeout(r,0));
+   const o=combinatorialScore(s,mode);
+   top.push({set:s,base:o.score,m:o.m});
+   top.sort((a,b)=>b.base-a.base);
+   if(top.length>finalistCount)top.length=finalistCount;
+   $('bar').style.width=((i+1)/tries*65)+'%';
+   if(i%5===0)await new Promise(r=>setTimeout(r,0));
  }
- tickets=best||[];render(bestObj?.m||metrics(tickets));$('generate').disabled=false
+
+ // Fase 2: i finalisti sono testati sulle stesse estrazioni casuali.
+ let chosen=top[0], chosenEst=null;
+ if(mode==='optimal'){
+   const draws=makeDrawPool(precision);
+   for(let i=0;i<top.length;i++){
+     const est=estimateOnDraws(top[i].set,draws);
+     top[i].est=est;
+     top[i].finalScore=mcScore(est) + top[i].base*0.00015;
+     if(!chosenEst || top[i].finalScore>chosen.finalScore){chosen=top[i];chosenEst=est}
+     $('bar').style.width=(65+(i+1)/top.length*35)+'%';
+     await new Promise(r=>setTimeout(r,0));
+   }
+   chosenEst=chosen.est;
+ }else{
+   // Anche nelle altre modalità mostriamo una stima finale del sistema scelto.
+   const draws=makeDrawPool(Math.min(precision,5000));
+   chosenEst=estimateOnDraws(chosen.set,draws);
+   $('bar').style.width='100%';
+ }
+ tickets=chosen.set||[];
+ render(chosen.m||metrics(tickets),chosenEst,tries,finalistCount);
+ $('generate').disabled=false
 }
-function render(m){
- $('ncomb').textContent=tickets.length;$('p6').textContent=tickets.length?'1 su '+Math.round(TOTAL/tickets.length).toLocaleString('it-IT'):'—';
- $('upairs').textContent=m.pairs.toLocaleString('it-IT');$('utriples').textContent=m.triples.toLocaleString('it-IT');
+function render(m, est, tries, finalistCount){
+ $('ncomb').textContent=tickets.length;
+ $('p6').textContent=tickets.length?'1 su '+Math.round(TOTAL/tickets.length).toLocaleString('it-IT'):'—';
+ $('upairs').textContent=m.pairs.toLocaleString('it-IT');
+ $('utriples').textContent=m.triples.toLocaleString('it-IT');
  const box=$('tickets');box.innerHTML='';
  tickets.forEach((t,i)=>{const d=document.createElement('div');d.className='ticket';d.innerHTML=`<div class="idx">#${i+1}</div><div class="balls">${t.map(n=>`<span class="ball">${n}</span>`).join('')}</div>`;box.appendChild(d)});
  ['copy','csv','save'].forEach(id=>$(id).disabled=!tickets.length);
- const b=backtest(tickets);$('b2').textContent=b.c2;$('b3').textContent=b.c3;$('b4').textContent=b.c4;$('besthit').textContent=b.best+' numeri';
+
+ if(est){
+   $('mc2').textContent=fmtPct(est.p2);
+   $('mc3').textContent=fmtPct(est.p3);
+   $('mc4').textContent=fmtPct(est.p4);
+   $('mcN').textContent=est.n.toLocaleString('it-IT');
+   $('mcNote').textContent=`Stima su ${est.n.toLocaleString('it-IT')} estrazioni casuali. Valori indicativi: la simulazione riduce l'incertezza aumentando la precisione, ma non predice il prossimo concorso.`;
+ }
+
+ const b=backtest(tickets);
+ $('b2').textContent=b.c2;$('b3').textContent=b.c3;$('b4').textContent=b.c4;$('besthit').textContent=b.best+' numeri';
  $('btrows').innerHTML=b.detail.slice(0,30).map(x=>`<tr><td>${x.d.n}</td><td>${x.d.date}</td><td>${x.d.nums.join(' ')}</td><td>${x.bt?x.bt.join(' '):'—'}</td><td class="${x.bh>=4?'good':x.bh>=3?'mid':''}">${x.bh}</td></tr>`).join('');
- $('status').textContent=`Sistema scelto tra ${$('mode').value==='random'?1:$('tries').value} candidati. Backtest: almeno un 3 in ${b.c3}/105 concorsi; almeno un 4 in ${b.c4}/105.`;
+
+ const mode=$('mode').value;
+ if(mode==='optimal'){
+   $('status').textContent=`Budget Ottimale: ${tries} sistemi classificati per copertura; i migliori ${finalistCount} sono stati confrontati con Monte Carlo. Backtest 6 mesi: almeno un 3 in ${b.c3}/105 concorsi e almeno un 4 in ${b.c4}/105.`;
+ }else{
+   $('status').textContent=`Sistema scelto tra ${mode==='random'?1:tries} candidati. Backtest 6 mesi: almeno un 3 in ${b.c3}/105 concorsi e almeno un 4 in ${b.c4}/105.`;
+ }
  updateMath()
 }
 function historyStats(){
@@ -201,8 +315,8 @@ function updateMath(){
  $('budgetMath').innerHTML=`Con <b>${n} sestine diverse</b>: probabilità del 6 ≈ <b>1 su ${Math.round(TOTAL/n).toLocaleString('it-IT')}</b> (${pct.toExponential(3)}%). Per raddoppiare questa probabilità servono circa il doppio delle sestine, quindi anche circa il doppio del costo.`
 }
 function copySet(){navigator.clipboard.writeText(tickets.map((t,i)=>`${i+1}. ${t.join(' - ')}`).join('\n'))}
-function csv(){const s='Combinazione;N1;N2;N3;N4;N5;N6\n'+tickets.map((t,i)=>[i+1,...t].join(';')).join('\n');const b=new Blob([s],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='SE90_sistema_v3.csv';a.click();URL.revokeObjectURL(a.href)}
-function save(){localStorage.setItem('se90v3',JSON.stringify({date:new Date().toISOString(),budget:$('budget').value,tickets}))}
+function csv(){const s='Combinazione;N1;N2;N3;N4;N5;N6\n'+tickets.map((t,i)=>[i+1,...t].join(';')).join('\n');const b=new Blob([s],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='SE90_sistema_v4.csv';a.click();URL.revokeObjectURL(a.href)}
+function save(){localStorage.setItem('se90v4',JSON.stringify({date:new Date().toISOString(),budget:$('budget').value,tickets}))}
 
 document.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{$('budget').value=b.dataset.b;updateMath()});
 $('budget').oninput=updateMath;$('generate').onclick=generate;$('copy').onclick=copySet;$('csv').onclick=csv;$('save').onclick=save;
