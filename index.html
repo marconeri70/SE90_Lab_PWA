@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#091423">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>SE90 Lab v5 — Motore Combinatorio</title>
+<title>SE90 Lab v6.1 — Match Evidenziati</title>
 <style>
 :root{--bg:#07101c;--card:#101c2f;--card2:#0b1728;--line:#263a57;--txt:#eef5ff;--muted:#9cb0ca;--green:#39cc98;--blue:#67aaff;--amber:#f2b85e;--red:#ff8585;--violet:#a98bff}
 *{box-sizing:border-box}
@@ -33,6 +33,20 @@ button.primary{background:linear-gradient(135deg,var(--green),#2c9fd9);color:#03
 .tabs{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 12px}.tab{background:#15243a;color:#b9c8da}.tab.active{background:#294867;color:#fff}.panel{display:none}.panel.active{display:block}
 .tickets{display:grid;gap:7px;max-height:500px;overflow:auto;margin-top:12px}.ticket{display:flex;align-items:center;gap:7px;background:var(--card2);border:1px solid var(--line);border-radius:13px;padding:8px}.idx{width:34px;font-size:12px;color:var(--muted)}.balls{display:flex;gap:5px;flex-wrap:wrap}.ball{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#1c3553;border:1px solid #3a5e83;font-weight:850;font-size:13px}
 .tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:690px;font-size:12px}th,td{border-bottom:1px solid var(--line);padding:8px 7px;text-align:left}th{color:#a9bdd5}.good{color:#8be1bf}.mid{color:#ffd67b}.bad{color:#ff9a9a}
+.matchballs{display:flex;gap:4px;flex-wrap:wrap;min-width:225px}
+.mball{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:#1b304a;border:1px solid #395574;font-weight:800;font-size:12px}
+.mball.hit{background:#156a4d;border-color:#4fe0a8;color:#fff;box-shadow:0 0 0 2px rgba(79,224,168,.12)}
+.mball.hit4{background:#8a6218;border-color:#ffd06a;color:#fff}
+.mball.hit5{background:#8a3434;border-color:#ff8d8d;color:#fff}
+.hitbadge{display:inline-flex;align-items:center;justify-content:center;min-width:38px;padding:5px 8px;border-radius:999px;background:#213551;font-weight:900}
+.hitbadge.h2{background:#234b72}.hitbadge.h3{background:#166148}.hitbadge.h4{background:#805b17}.hitbadge.h5,.hitbadge.h6{background:#883838}
+.legend{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:10px 0;color:var(--muted);font-size:12px}
+.legend i{width:16px;height:16px;border-radius:50%;display:inline-block;vertical-align:middle;margin-right:4px}
+.legend .lg-hit{background:#156a4d;border:1px solid #4fe0a8}
+.legend .lg-normal{background:#1b304a;border:1px solid #395574}
+.history-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+@media(max-width:620px){.history-controls{grid-template-columns:1fr}}
+
 .small{font-size:12px;color:var(--muted);line-height:1.46}.install{display:none}.install.show{display:inline-block}
 .meter{height:13px;background:#081321;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:6px}.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--green))}
 .compare{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}@media(max-width:700px){.compare{grid-template-columns:1fr}}.compare .box{background:var(--card2);border:1px solid var(--line);border-radius:13px;padding:11px}.compare .box b{font-size:18px}.compare .box span{display:block;font-size:11px;color:var(--muted);margin-top:4px}
@@ -42,9 +56,9 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 <body>
 <div class="app">
 <section class="hero">
-<span class="badge">v5 • Motore combinatorio • validazione fuori campione</span>
+<span class="badge">v6.1 • Match evidenziati • storico automatico</span>
 <h1>SE90 Lab</h1>
-<p>Ottimizza la copertura con budget fisso, misura esattamente coppie/terne/quaterne coperte, confronta il sistema con sistemi casuali equivalenti e separa il backtest storico dalla verifica fuori campione.</p>
+<p>Ottimizza la copertura con budget fisso e mantiene automaticamente una finestra mobile di almeno 6 mesi di estrazioni ufficiali quando è pubblicata online.</p>
 </section>
 
 <section class="card">
@@ -135,7 +149,7 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 
 <section class="card panel" id="validationPanel">
 <h2>5. Validazione fuori campione</h2>
-<div class="notice">I <b>70 concorsi più vecchi</b> del semestre costituiscono il periodo di addestramento. I <b>35 più recenti</b> non vengono usati dal tie-breaker storico e servono soltanto per la verifica successiva.</div>
+<div class="notice">Lo storico viene diviso automaticamente: circa i <b>2/3 più vecchi</b> formano il periodo di addestramento e il <b>1/3 più recente</b> resta fuori campione per la verifica.</div>
 <div class="kpis" style="margin-top:12px">
 <div class="kpi"><b id="train3">—</b><span>train: concorsi con ≥3</span></div>
 <div class="kpi"><b id="test3">—</b><span>test: concorsi con ≥3</span></div>
@@ -155,29 +169,87 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 </section>
 
 <section class="card panel" id="historyPanel">
-<h2>7. Storico incorporato</h2>
-<p class="small">105 concorsi reali dal 13 marzo all'11 settembre 2026. Le frequenze sono descrittive e non vengono trattate come probabilità future.</p>
+<h2>7. Storico automatico</h2>
+<p class="small">Quando l'app è pubblicata su GitHub Pages, legge <code>history.json</code> aggiornato automaticamente dall'archivio ufficiale. Se la rete non è disponibile usa l'ultimo storico salvato o il fallback incorporato.</p>
 <div class="kpis">
-<div class="kpi"><b>105</b><span>concorsi</span></div>
-<div class="kpi"><b>70</b><span>train più vecchi</span></div>
-<div class="kpi"><b>35</b><span>test più recenti</span></div>
-<div class="kpi"><b id="historyLast">146</b><span>ultimo concorso incluso</span></div>
+<div class="kpi"><b id="historyCount">—</b><span>concorsi caricati</span></div>
+<div class="kpi"><b id="trainCount">—</b><span>train più vecchi</span></div>
+<div class="kpi"><b id="testCount">—</b><span>test più recenti</span></div>
+<div class="kpi"><b id="historyLast">—</b><span>ultimo concorso incluso</span></div>
 </div>
+<div class="actions">
+<button class="primary" id="refreshHistory">Aggiorna storico ora</button>
+</div>
+<div class="notice ok" style="margin-top:12px">
+<b id="historyStatus">Caricamento storico…</b><br>
+<span id="historyUpdated" class="small"></span>
+</div>
+
+<h3>Confronto dettagliato con le sestine consigliate</h3>
+<div class="history-controls">
+<div>
+<label>Mostra</label>
+<select id="historyFilter">
+<option value="0">Tutte le estrazioni</option>
+<option value="2" selected>Solo almeno 2 centrati</option>
+<option value="3">Solo almeno 3 centrati</option>
+<option value="4">Solo almeno 4 centrati</option>
+<option value="5">Solo almeno 5 centrati</option>
+</select>
+</div>
+<div>
+<label>Periodo</label>
+<select id="historyPeriod">
+<option value="all" selected>Tutti gli ultimi 6 mesi</option>
+<option value="test">Solo periodo fuori campione</option>
+<option value="train">Solo periodo train</option>
+</select>
+</div>
+</div>
+
+<div class="legend">
+<span><i class="lg-hit"></i>numero centrato</span>
+<span><i class="lg-normal"></i>numero non centrato</span>
+</div>
+
+<div class="kpis" style="margin-bottom:12px">
+<div class="kpi"><b id="histHit2">—</b><span>estrazioni con ≥2</span></div>
+<div class="kpi"><b id="histHit3">—</b><span>estrazioni con ≥3</span></div>
+<div class="kpi"><b id="histHit4">—</b><span>estrazioni con ≥4</span></div>
+<div class="kpi"><b id="histBest">—</b><span>miglior confronto</span></div>
+</div>
+
+<div class="tablewrap">
+<table>
+<thead>
+<tr>
+<th>Concorso</th>
+<th>Data</th>
+<th>Numeri estratti</th>
+<th>Migliore sestina consigliata</th>
+<th>Centrati</th>
+</tr>
+</thead>
+<tbody id="historyCompareRows">
+<tr><td colspan="5" class="small">Genera prima un sistema per vedere il confronto.</td></tr>
+</tbody>
+</table>
+</div>
+<p class="small">I numeri evidenziati sono quelli presenti sia nell'estrazione storica sia nella migliore sestina consigliata per quel concorso.</p>
 </section>
 
 <section class="card">
 <div class="notice warn"><b>Limite matematico:</b> nessun algoritmo può rendere una specifica sestina più probabile di un'altra in un'estrazione equa. Questa app prova a usare meglio un budget fissato, soprattutto riducendo sovrapposizioni fra le schedine e misurando il risultato contro sistemi casuali equivalenti.</div>
 </section>
 
-<footer>SE90 Lab v5 è uno strumento statistico indipendente. Il motore calcola esattamente la copertura del sistema scelto ma usa ricerca euristica per trovarlo. Verifica sempre regole e dati ufficiali. Il gioco può causare dipendenza.</footer>
+<footer>SE90 Lab v6.1 è uno strumento statistico indipendente. Il motore calcola esattamente la copertura del sistema scelto ma usa ricerca euristica per trovarlo. Verifica sempre regole e dati ufficiali. Il gioco può causare dipendenza.</footer>
 </div>
 
 <script>
-const HISTORY=[{"n":146,"date":"2026-09-11","nums":[8,13,16,52,64,70]},{"n":145,"date":"2026-09-10","nums":[2,17,39,59,63,89]},{"n":144,"date":"2026-09-08","nums":[23,26,41,52,59,85]},{"n":143,"date":"2026-09-05","nums":[12,24,28,32,37,78]},{"n":142,"date":"2026-09-04","nums":[8,44,60,73,86,89]},{"n":141,"date":"2026-09-03","nums":[8,11,15,60,68,76]},{"n":140,"date":"2026-09-01","nums":[42,47,59,64,67,71]},{"n":139,"date":"2026-08-29","nums":[12,17,45,59,74,77]},{"n":138,"date":"2026-08-28","nums":[4,8,27,62,70,79]},{"n":137,"date":"2026-08-27","nums":[2,27,28,50,75,84]},{"n":136,"date":"2026-08-25","nums":[15,36,62,67,69,70]},{"n":135,"date":"2026-08-22","nums":[2,16,23,31,72,85]},{"n":134,"date":"2026-08-21","nums":[12,25,27,28,39,57]},{"n":133,"date":"2026-08-20","nums":[14,18,26,51,64,71]},{"n":132,"date":"2026-08-18","nums":[10,16,24,25,39,66]},{"n":131,"date":"2026-08-17","nums":[18,24,69,71,73,82]},{"n":130,"date":"2026-08-14","nums":[9,18,20,25,53,90]},{"n":129,"date":"2026-08-13","nums":[2,7,16,29,57,84]},{"n":128,"date":"2026-08-11","nums":[8,19,38,53,66,79]},{"n":127,"date":"2026-08-08","nums":[9,12,55,61,82,85]},{"n":126,"date":"2026-08-07","nums":[1,7,29,32,60,63]},{"n":125,"date":"2026-08-06","nums":[2,11,20,33,74,83]},{"n":124,"date":"2026-08-04","nums":[49,56,58,70,76,78]},{"n":123,"date":"2026-08-01","nums":[8,11,21,24,72,88]},{"n":122,"date":"2026-07-31","nums":[2,6,10,31,39,83]},{"n":121,"date":"2026-07-30","nums":[20,47,75,76,78,89]},{"n":120,"date":"2026-07-28","nums":[1,6,9,43,54,62]},{"n":119,"date":"2026-07-25","nums":[18,19,33,34,61,85]},{"n":118,"date":"2026-07-24","nums":[20,40,53,61,74,79]},{"n":117,"date":"2026-07-23","nums":[2,12,22,34,70,74]},{"n":116,"date":"2026-07-21","nums":[13,14,15,29,38,63]},{"n":115,"date":"2026-07-18","nums":[1,28,52,62,79,86]},{"n":114,"date":"2026-07-17","nums":[7,34,45,64,65,76]},{"n":113,"date":"2026-07-16","nums":[1,15,21,46,52,67]},{"n":112,"date":"2026-07-14","nums":[8,44,49,80,85,88]},{"n":111,"date":"2026-07-11","nums":[6,7,10,47,49,61]},{"n":110,"date":"2026-07-10","nums":[2,3,12,28,63,82]},{"n":109,"date":"2026-07-09","nums":[9,17,20,31,40,79]},{"n":108,"date":"2026-07-07","nums":[3,16,30,53,55,79]},{"n":107,"date":"2026-07-04","nums":[2,37,55,62,72,76]},{"n":106,"date":"2026-07-03","nums":[22,26,30,40,68,86]},{"n":105,"date":"2026-07-02","nums":[4,17,19,23,47,59]},{"n":104,"date":"2026-06-30","nums":[1,7,51,64,78,83]},{"n":103,"date":"2026-06-27","nums":[15,19,36,47,85,90]},{"n":102,"date":"2026-06-26","nums":[1,22,30,45,73,76]},{"n":101,"date":"2026-06-25","nums":[25,27,54,72,73,76]},{"n":100,"date":"2026-06-23","nums":[1,12,17,27,66,84]},{"n":99,"date":"2026-06-20","nums":[14,59,69,71,82,89]},{"n":98,"date":"2026-06-19","nums":[14,18,25,69,81,89]},{"n":97,"date":"2026-06-18","nums":[4,26,39,43,70,87]},{"n":96,"date":"2026-06-16","nums":[4,28,33,35,66,80]},{"n":95,"date":"2026-06-13","nums":[13,23,34,68,87,90]},{"n":94,"date":"2026-06-12","nums":[18,24,42,68,75,83]},{"n":93,"date":"2026-06-11","nums":[7,21,22,40,44,87]},{"n":92,"date":"2026-06-09","nums":[18,36,47,55,73,80]},{"n":91,"date":"2026-06-08","nums":[28,33,51,59,82,87]},{"n":90,"date":"2026-06-06","nums":[2,7,29,68,72,89]},{"n":89,"date":"2026-06-05","nums":[9,25,51,63,73,89]},{"n":88,"date":"2026-06-04","nums":[12,33,43,55,74,75]},{"n":87,"date":"2026-05-30","nums":[8,13,21,39,63,71]},{"n":86,"date":"2026-05-29","nums":[9,42,44,46,85,90]},{"n":85,"date":"2026-05-28","nums":[22,33,36,74,78,86]},{"n":84,"date":"2026-05-26","nums":[7,10,35,41,45,61]},{"n":83,"date":"2026-05-23","nums":[14,29,34,57,59,69]},{"n":82,"date":"2026-05-22","nums":[5,17,65,71,83,87]},{"n":81,"date":"2026-05-21","nums":[1,38,57,58,64,81]},{"n":80,"date":"2026-05-19","nums":[49,57,61,73,79,86]},{"n":79,"date":"2026-05-16","nums":[7,12,60,69,89,90]},{"n":78,"date":"2026-05-15","nums":[5,13,17,28,47,68]},{"n":77,"date":"2026-05-14","nums":[31,56,72,74,84,85]},{"n":76,"date":"2026-05-12","nums":[2,28,31,57,58,59]},{"n":75,"date":"2026-05-09","nums":[9,27,30,42,43,62]},{"n":74,"date":"2026-05-08","nums":[8,16,41,47,51,90]},{"n":73,"date":"2026-05-07","nums":[1,34,48,66,69,73]},{"n":72,"date":"2026-05-05","nums":[24,34,45,55,81,87]},{"n":71,"date":"2026-05-04","nums":[3,14,31,46,61,63]},{"n":70,"date":"2026-05-02","nums":[7,58,60,79,84,86]},{"n":69,"date":"2026-04-30","nums":[6,7,15,44,52,58]},{"n":68,"date":"2026-04-28","nums":[29,42,43,47,57,60]},{"n":67,"date":"2026-04-27","nums":[40,57,62,64,85,87]},{"n":66,"date":"2026-04-24","nums":[6,13,33,37,68,82]},{"n":65,"date":"2026-04-23","nums":[18,24,28,35,56,58]},{"n":64,"date":"2026-04-21","nums":[18,19,40,43,56,77]},{"n":63,"date":"2026-04-18","nums":[11,22,28,33,68,77]},{"n":62,"date":"2026-04-17","nums":[13,27,45,53,57,84]},{"n":61,"date":"2026-04-16","nums":[9,11,12,38,44,54]},{"n":60,"date":"2026-04-14","nums":[3,5,20,27,35,66]},{"n":59,"date":"2026-04-11","nums":[19,28,38,48,77,85]},{"n":58,"date":"2026-04-10","nums":[3,10,13,17,58,90]},{"n":57,"date":"2026-04-09","nums":[2,30,38,63,74,84]},{"n":56,"date":"2026-04-07","nums":[10,16,18,47,50,59]},{"n":55,"date":"2026-04-04","nums":[8,21,29,46,60,81]},{"n":54,"date":"2026-04-03","nums":[28,52,53,64,66,72]},{"n":53,"date":"2026-04-02","nums":[18,24,25,32,36,63]},{"n":52,"date":"2026-03-31","nums":[1,3,39,46,47,61]},{"n":51,"date":"2026-03-28","nums":[9,45,62,67,68,81]},{"n":50,"date":"2026-03-27","nums":[6,22,27,43,58,64]},{"n":49,"date":"2026-03-26","nums":[24,26,39,69,77,80]},{"n":48,"date":"2026-03-24","nums":[6,54,60,64,74,87]},{"n":47,"date":"2026-03-21","nums":[9,26,33,49,51,55]},{"n":46,"date":"2026-03-20","nums":[14,32,45,51,54,87]},{"n":45,"date":"2026-03-19","nums":[19,39,45,54,62,89]},{"n":44,"date":"2026-03-17","nums":[2,13,16,41,53,56]},{"n":43,"date":"2026-03-14","nums":[3,6,33,63,88,89]},{"n":42,"date":"2026-03-13","nums":[3,11,13,20,53,61]}];
+const FALLBACK_HISTORY=[{"n":146,"date":"2026-09-11","nums":[8,13,16,52,64,70]},{"n":145,"date":"2026-09-10","nums":[2,17,39,59,63,89]},{"n":144,"date":"2026-09-08","nums":[23,26,41,52,59,85]},{"n":143,"date":"2026-09-05","nums":[12,24,28,32,37,78]},{"n":142,"date":"2026-09-04","nums":[8,44,60,73,86,89]},{"n":141,"date":"2026-09-03","nums":[8,11,15,60,68,76]},{"n":140,"date":"2026-09-01","nums":[42,47,59,64,67,71]},{"n":139,"date":"2026-08-29","nums":[12,17,45,59,74,77]},{"n":138,"date":"2026-08-28","nums":[4,8,27,62,70,79]},{"n":137,"date":"2026-08-27","nums":[2,27,28,50,75,84]},{"n":136,"date":"2026-08-25","nums":[15,36,62,67,69,70]},{"n":135,"date":"2026-08-22","nums":[2,16,23,31,72,85]},{"n":134,"date":"2026-08-21","nums":[12,25,27,28,39,57]},{"n":133,"date":"2026-08-20","nums":[14,18,26,51,64,71]},{"n":132,"date":"2026-08-18","nums":[10,16,24,25,39,66]},{"n":131,"date":"2026-08-17","nums":[18,24,69,71,73,82]},{"n":130,"date":"2026-08-14","nums":[9,18,20,25,53,90]},{"n":129,"date":"2026-08-13","nums":[2,7,16,29,57,84]},{"n":128,"date":"2026-08-11","nums":[8,19,38,53,66,79]},{"n":127,"date":"2026-08-08","nums":[9,12,55,61,82,85]},{"n":126,"date":"2026-08-07","nums":[1,7,29,32,60,63]},{"n":125,"date":"2026-08-06","nums":[2,11,20,33,74,83]},{"n":124,"date":"2026-08-04","nums":[49,56,58,70,76,78]},{"n":123,"date":"2026-08-01","nums":[8,11,21,24,72,88]},{"n":122,"date":"2026-07-31","nums":[2,6,10,31,39,83]},{"n":121,"date":"2026-07-30","nums":[20,47,75,76,78,89]},{"n":120,"date":"2026-07-28","nums":[1,6,9,43,54,62]},{"n":119,"date":"2026-07-25","nums":[18,19,33,34,61,85]},{"n":118,"date":"2026-07-24","nums":[20,40,53,61,74,79]},{"n":117,"date":"2026-07-23","nums":[2,12,22,34,70,74]},{"n":116,"date":"2026-07-21","nums":[13,14,15,29,38,63]},{"n":115,"date":"2026-07-18","nums":[1,28,52,62,79,86]},{"n":114,"date":"2026-07-17","nums":[7,34,45,64,65,76]},{"n":113,"date":"2026-07-16","nums":[1,15,21,46,52,67]},{"n":112,"date":"2026-07-14","nums":[8,44,49,80,85,88]},{"n":111,"date":"2026-07-11","nums":[6,7,10,47,49,61]},{"n":110,"date":"2026-07-10","nums":[2,3,12,28,63,82]},{"n":109,"date":"2026-07-09","nums":[9,17,20,31,40,79]},{"n":108,"date":"2026-07-07","nums":[3,16,30,53,55,79]},{"n":107,"date":"2026-07-04","nums":[2,37,55,62,72,76]},{"n":106,"date":"2026-07-03","nums":[22,26,30,40,68,86]},{"n":105,"date":"2026-07-02","nums":[4,17,19,23,47,59]},{"n":104,"date":"2026-06-30","nums":[1,7,51,64,78,83]},{"n":103,"date":"2026-06-27","nums":[15,19,36,47,85,90]},{"n":102,"date":"2026-06-26","nums":[1,22,30,45,73,76]},{"n":101,"date":"2026-06-25","nums":[25,27,54,72,73,76]},{"n":100,"date":"2026-06-23","nums":[1,12,17,27,66,84]},{"n":99,"date":"2026-06-20","nums":[14,59,69,71,82,89]},{"n":98,"date":"2026-06-19","nums":[14,18,25,69,81,89]},{"n":97,"date":"2026-06-18","nums":[4,26,39,43,70,87]},{"n":96,"date":"2026-06-16","nums":[4,28,33,35,66,80]},{"n":95,"date":"2026-06-13","nums":[13,23,34,68,87,90]},{"n":94,"date":"2026-06-12","nums":[18,24,42,68,75,83]},{"n":93,"date":"2026-06-11","nums":[7,21,22,40,44,87]},{"n":92,"date":"2026-06-09","nums":[18,36,47,55,73,80]},{"n":91,"date":"2026-06-08","nums":[28,33,51,59,82,87]},{"n":90,"date":"2026-06-06","nums":[2,7,29,68,72,89]},{"n":89,"date":"2026-06-05","nums":[9,25,51,63,73,89]},{"n":88,"date":"2026-06-04","nums":[12,33,43,55,74,75]},{"n":87,"date":"2026-05-30","nums":[8,13,21,39,63,71]},{"n":86,"date":"2026-05-29","nums":[9,42,44,46,85,90]},{"n":85,"date":"2026-05-28","nums":[22,33,36,74,78,86]},{"n":84,"date":"2026-05-26","nums":[7,10,35,41,45,61]},{"n":83,"date":"2026-05-23","nums":[14,29,34,57,59,69]},{"n":82,"date":"2026-05-22","nums":[5,17,65,71,83,87]},{"n":81,"date":"2026-05-21","nums":[1,38,57,58,64,81]},{"n":80,"date":"2026-05-19","nums":[49,57,61,73,79,86]},{"n":79,"date":"2026-05-16","nums":[7,12,60,69,89,90]},{"n":78,"date":"2026-05-15","nums":[5,13,17,28,47,68]},{"n":77,"date":"2026-05-14","nums":[31,56,72,74,84,85]},{"n":76,"date":"2026-05-12","nums":[2,28,31,57,58,59]},{"n":75,"date":"2026-05-09","nums":[9,27,30,42,43,62]},{"n":74,"date":"2026-05-08","nums":[8,16,41,47,51,90]},{"n":73,"date":"2026-05-07","nums":[1,34,48,66,69,73]},{"n":72,"date":"2026-05-05","nums":[24,34,45,55,81,87]},{"n":71,"date":"2026-05-04","nums":[3,14,31,46,61,63]},{"n":70,"date":"2026-05-02","nums":[7,58,60,79,84,86]},{"n":69,"date":"2026-04-30","nums":[6,7,15,44,52,58]},{"n":68,"date":"2026-04-28","nums":[29,42,43,47,57,60]},{"n":67,"date":"2026-04-27","nums":[40,57,62,64,85,87]},{"n":66,"date":"2026-04-24","nums":[6,13,33,37,68,82]},{"n":65,"date":"2026-04-23","nums":[18,24,28,35,56,58]},{"n":64,"date":"2026-04-21","nums":[18,19,40,43,56,77]},{"n":63,"date":"2026-04-18","nums":[11,22,28,33,68,77]},{"n":62,"date":"2026-04-17","nums":[13,27,45,53,57,84]},{"n":61,"date":"2026-04-16","nums":[9,11,12,38,44,54]},{"n":60,"date":"2026-04-14","nums":[3,5,20,27,35,66]},{"n":59,"date":"2026-04-11","nums":[19,28,38,48,77,85]},{"n":58,"date":"2026-04-10","nums":[3,10,13,17,58,90]},{"n":57,"date":"2026-04-09","nums":[2,30,38,63,74,84]},{"n":56,"date":"2026-04-07","nums":[10,16,18,47,50,59]},{"n":55,"date":"2026-04-04","nums":[8,21,29,46,60,81]},{"n":54,"date":"2026-04-03","nums":[28,52,53,64,66,72]},{"n":53,"date":"2026-04-02","nums":[18,24,25,32,36,63]},{"n":52,"date":"2026-03-31","nums":[1,3,39,46,47,61]},{"n":51,"date":"2026-03-28","nums":[9,45,62,67,68,81]},{"n":50,"date":"2026-03-27","nums":[6,22,27,43,58,64]},{"n":49,"date":"2026-03-26","nums":[24,26,39,69,77,80]},{"n":48,"date":"2026-03-24","nums":[6,54,60,64,74,87]},{"n":47,"date":"2026-03-21","nums":[9,26,33,49,51,55]},{"n":46,"date":"2026-03-20","nums":[14,32,45,51,54,87]},{"n":45,"date":"2026-03-19","nums":[19,39,45,54,62,89]},{"n":44,"date":"2026-03-17","nums":[2,13,16,41,53,56]},{"n":43,"date":"2026-03-14","nums":[3,6,33,63,88,89]},{"n":42,"date":"2026-03-13","nums":[3,11,13,20,53,61]}];
+let HISTORY=[...FALLBACK_HISTORY], TRAIN=[], TEST=[];
 const TOTAL=622614630, UPAIRS=4005, UTRIPLES=117480, UQUADS=2555190;
 const nums90=Array.from({length:90},(_,i)=>i+1);
-const TRAIN=HISTORY.slice(35);       // 70 più vecchi, perché HISTORY è recente->vecchio
-const TEST=HISTORY.slice(0,35);      // 35 più recenti, mai usati per scegliere col tie-breaker
 let tickets=[], lastEstimate=null, deferredPrompt=null;
 const $=id=>document.getElementById(id), rnd=n=>Math.floor(Math.random()*n);
 
@@ -347,7 +419,114 @@ function render(m,e,baseScores,baseP3,baseP4,drawN,tries,steps){
  $('validationNote').textContent=`Tasso ≥3: train ${(r3train*100).toFixed(1)}%, test ${(r3test*100).toFixed(1)}%. ${$('historyAssist').checked?'Il test recente non è stato usato dal tie-breaker storico.':'Lo storico non ha influenzato la selezione.'}`;
 
  renderProbTable(e);
+ renderHistoryComparison();
  $('status').textContent=`Completato: ${tries} candidati + miglioramento locale (${steps} iterazioni) + Monte Carlo + benchmark casuale. Le coperture coppie/terne/quaterne visualizzate sono conteggi esatti del sistema scelto.`;
+}
+
+
+
+function bestTicketForDraw(drawNums){
+ let best=null,bh=-1;
+ for(let i=0;i<tickets.length;i++){
+   const h=hit(tickets[i],drawNums);
+   if(h>bh){bh=h;best=tickets[i];}
+   if(bh===6)break;
+ }
+ return {ticket:best,hit:Math.max(0,bh)};
+}
+function matchBallsHTML(numbers, matches, totalHit){
+ const s=new Set(matches||[]);
+ let hitClass=totalHit>=5?'hit5':totalHit>=4?'hit4':'hit';
+ return `<div class="matchballs">${numbers.map(n=>`<span class="mball ${s.has(n)?hitClass:''}">${n}</span>`).join('')}</div>`;
+}
+function historyDataset(){
+ const p=$('historyPeriod')?.value||'all';
+ if(p==='train')return TRAIN;
+ if(p==='test')return TEST;
+ return HISTORY;
+}
+function renderHistoryComparison(){
+ const body=$('historyCompareRows');
+ if(!body)return;
+ if(!tickets.length){
+   body.innerHTML='<tr><td colspan="5" class="small">Genera prima un sistema per vedere il confronto.</td></tr>';
+   $('histHit2').textContent='—';$('histHit3').textContent='—';$('histHit4').textContent='—';$('histBest').textContent='—';
+   return;
+ }
+ const data=historyDataset();
+ const minHit=Number($('historyFilter')?.value||0);
+ let c2=0,c3=0,c4=0,best=0,rows=[];
+ for(const d of data){
+   const r=bestTicketForDraw(d.nums);
+   if(r.hit>=2)c2++;if(r.hit>=3)c3++;if(r.hit>=4)c4++;if(r.hit>best)best=r.hit;
+   if(r.hit<minHit)continue;
+   const match=(r.ticket||[]).filter(n=>d.nums.includes(n));
+   const badgeClass='h'+Math.min(6,Math.max(2,r.hit));
+   rows.push(`<tr>
+     <td>${d.n}</td>
+     <td>${d.date}</td>
+     <td>${matchBallsHTML(d.nums,match,r.hit)}</td>
+     <td>${r.ticket?matchBallsHTML(r.ticket,match,r.hit):'—'}</td>
+     <td><span class="hitbadge ${r.hit>=2?badgeClass:''}">${r.hit}/6</span></td>
+   </tr>`);
+ }
+ $('histHit2').textContent=`${c2}/${data.length}`;
+ $('histHit3').textContent=`${c3}/${data.length}`;
+ $('histHit4').textContent=`${c4}/${data.length}`;
+ $('histBest').textContent=best+'/6';
+ body.innerHTML=rows.length?rows.join(''):`<tr><td colspan="5" class="small">Nessuna estrazione soddisfa il filtro selezionato.</td></tr>`;
+}
+
+function validHistory(rows){
+ return Array.isArray(rows) && rows.length>=30 && rows.every(d=>
+   Number.isInteger(Number(d.n)) &&
+   /^\d{4}-\d{2}-\d{2}$/.test(d.date) &&
+   Array.isArray(d.nums) && d.nums.length===6 &&
+   new Set(d.nums.map(Number)).size===6 &&
+   d.nums.every(x=>Number(x)>=1&&Number(x)<=90)
+ );
+}
+function refreshSplits(){
+ HISTORY.sort((a,b)=>b.date.localeCompare(a.date));
+ const testN=Math.max(10,Math.round(HISTORY.length/3));
+ TEST=HISTORY.slice(0,testN);
+ TRAIN=HISTORY.slice(testN);
+ $('historyCount').textContent=HISTORY.length;
+ $('trainCount').textContent=TRAIN.length;
+ $('testCount').textContent=TEST.length;
+ $('historyLast').textContent=HISTORY[0]?.n ?? '—';
+ if(tickets.length)renderHistoryComparison();
+}
+async function loadRemoteHistory(force=false){
+ const status=$('historyStatus'), updated=$('historyUpdated');
+ status.textContent='Controllo aggiornamenti…';
+ try{
+   const res=await fetch('history.json?ts='+(force?Date.now():Math.floor(Date.now()/300000)),{cache:'no-store'});
+   if(!res.ok)throw new Error('HTTP '+res.status);
+   const data=await res.json();
+   const rows=Array.isArray(data)?data:data.draws;
+   if(!validHistory(rows))throw new Error('Archivio non valido');
+   HISTORY=rows.map(d=>({n:Number(d.n),date:d.date,nums:d.nums.map(Number),jolly:d.jolly??null,star:d.star??null}));
+   refreshSplits();
+   localStorage.setItem('se90_history_cache',JSON.stringify({updated_at:data.updated_at||new Date().toISOString(),draws:HISTORY}));
+   status.textContent=`Storico aggiornato: ${HISTORY.length} concorsi, ultimo n. ${HISTORY[0].n} del ${HISTORY[0].date}.`;
+   updated.textContent=`Fonte: ${data.source||'archivio remoto'} • aggiornato ${data.updated_at?new Date(data.updated_at).toLocaleString('it-IT'):'ora'}.`;
+   return true;
+ }catch(err){
+   try{
+     const cached=JSON.parse(localStorage.getItem('se90_history_cache')||'null');
+     if(cached && validHistory(cached.draws)){
+       HISTORY=cached.draws;refreshSplits();
+       status.textContent=`Offline/remoto non disponibile: uso l'ultimo storico salvato (${HISTORY.length} concorsi).`;
+       updated.textContent=cached.updated_at?`Cache del ${new Date(cached.updated_at).toLocaleString('it-IT')}.`:'';
+       return false;
+     }
+   }catch(_){}
+   HISTORY=[...FALLBACK_HISTORY];refreshSplits();
+   status.textContent=`Impossibile raggiungere lo storico aggiornato: uso il fallback incorporato (${HISTORY.length} concorsi).`;
+   updated.textContent='Quando l’app sarà online su GitHub Pages, l’aggiornamento tornerà automatico.';
+   return false;
+ }
 }
 
 function singleExact(k){
@@ -382,6 +561,10 @@ $('budget').oninput=updateBudgetGuard;$('monthlyLimit').oninput=updateBudgetGuar
 $('generate').onclick=optimize;$('copy').onclick=copySet;$('csv').onclick=csv;$('save').onclick=save;
 $('monthlySpent').value=localStorage.getItem('se90_monthlySpent')||'0';$('monthlyLimit').value=localStorage.getItem('se90_monthlyLimit')||'100';
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')});
+$('refreshHistory').onclick=()=>loadRemoteHistory(true);
+$('historyFilter').onchange=renderHistoryComparison;
+$('historyPeriod').onchange=renderHistoryComparison;
+refreshSplits();loadRemoteHistory(false);
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('install').classList.add('show')});
 $('install').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('install').classList.remove('show')};
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'));

@@ -1,0 +1,34 @@
+# SE90 Lab v6.1 — Storico automatico + match evidenziati
+
+Questa versione mantiene `history.json` aggiornato automaticamente dall'archivio ufficiale SuperEnalotto.
+
+## Come funziona
+- L'app (`index.html`) prova a leggere `history.json` a ogni apertura.
+- Se è online, usa il file più recente.
+- Se non c'è rete, usa la cache locale.
+- Se non esiste ancora una cache, usa lo storico incorporato nell'app.
+- `scripts/update_history.py` legge gli archivi mensili ufficiali e conserva una finestra mobile di 183 giorni dall'ultima estrazione ufficiale disponibile.
+- GitHub Actions esegue il controllo martedì, giovedì, venerdì e sabato dopo l'orario di estrazione.
+
+## Pubblicazione su GitHub Pages
+1. Crea un repository GitHub, per esempio `SE90-Lab`.
+2. Carica TUTTO il contenuto di questa cartella, comprese `.github` e `scripts`.
+3. In GitHub vai in **Settings > Pages**.
+4. In **Build and deployment** scegli **Deploy from a branch**.
+5. Seleziona il branch `main` e la cartella `/ (root)`.
+6. Salva. Dopo la pubblicazione apri l'indirizzo Pages dal telefono.
+7. Installa l'app dalla voce del browser “Installa app” / “Aggiungi a schermata Home”.
+
+## Aggiornamento manuale
+GitHub > Actions > “Aggiorna storico SuperEnalotto” > Run workflow.
+
+## Nota tecnica
+La pagina non fa scraping diretto dal browser: molti siti impediscono richieste cross-origin (CORS). L'aggiornamento avviene lato GitHub Actions e l'app legge un JSON sul proprio dominio, una soluzione più stabile e compatibile con PWA/offline.
+
+## Importante
+Lo storico serve a backtest e analisi descrittiva. Non rende più probabili i numeri già usciti o ritardatari.
+
+
+## Evidenziazione dei numeri centrati
+Nel pannello **Storico 6 mesi** ogni estrazione viene confrontata con la migliore sestina del sistema consigliato.
+I numeri presenti in entrambe sono evidenziati in entrambe le colonne. È possibile filtrare i confronti per almeno 2, 3, 4 o 5 numeri centrati e distinguere periodo train e periodo fuori campione.
