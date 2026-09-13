@@ -1,20 +1,5 @@
-SE90 Lab PWA
-
-CONTENUTO
-- index.html
-- manifest.json
-- sw.js
-- icon-192.png
-- icon-512.png
-
-COME INSTALLARLA SU ANDROID
-1. Pubblica questa cartella su un sito HTTPS (per esempio GitHub Pages, Cloudflare Pages o Netlify).
-2. Apri l'indirizzo con Chrome.
-3. Tocca "Installa app" quando compare, oppure menu ⋮ > Aggiungi a schermata Home / Installa app.
-4. Dopo la prima apertura, l'app funziona anche offline.
-
-NOTA
-Aprire semplicemente index.html come file locale permette di usare l'app nel browser,
-ma l'installazione PWA e il service worker richiedono normalmente HTTPS o localhost.
-
-SE90 Lab non prevede le estrazioni. Ottimizza soltanto la distribuzione delle combinazioni.
+SE90 Lab v3
+Include 105 concorsi dal 13/03/2026 all'11/09/2026.
+La modalità Massima copertura ottimizza coppie, terne e sovrapposizioni.
+La modalità Confronto storico usa il backtest solo come criterio secondario: non predice il futuro.
+Per installazione PWA, pubblicare la cartella su HTTPS (GitHub Pages / Cloudflare Pages / Netlify).

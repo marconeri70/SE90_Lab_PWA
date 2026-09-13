@@ -1,12 +1,11 @@
 {
-  "name": "SE90 Lab",
+  "name": "SE90 Lab v3 - Analisi 6 mesi",
   "short_name": "SE90 Lab",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#08111e",
-  "theme_color": "#0b1220",
-  "description": "Ottimizzatore statistico di combinazioni 6 su 90.",
+  "background_color": "#07101c",
+  "theme_color": "#091423",
   "icons": [
     {
       "src": "icon-192.png",

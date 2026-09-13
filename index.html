@@ -3,229 +3,213 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b1220">
+<meta name="theme-color" content="#091423">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>SE90 Lab</title>
+<title>SE90 Lab v3 — Analisi 6 mesi</title>
 <style>
-:root{--bg:#08111e;--card:#101c2f;--line:#263a57;--text:#eef5ff;--muted:#9db0c9;--green:#38c996;--blue:#66aaff;--amber:#f3b85d}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#07101c,#0c1727 55%,#08111e);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-.app{max-width:980px;margin:auto;padding:18px 14px 46px}.hero{padding:16px 2px 12px}.hero h1{margin:0;font-size:clamp(30px,7vw,48px);letter-spacing:-1.5px}.hero p{margin:7px 0;color:var(--muted);line-height:1.5}.badge{display:inline-block;background:#12362f;color:#88e6c5;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;margin-bottom:10px}
-.card{background:#101c2f;border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 14px 40px rgba(0,0,0,.24)}h2{font-size:19px;margin:0 0 13px}label{display:block;color:var(--muted);font-size:13px;margin:10px 0 6px}
-input,select,button{font:inherit}input,select{width:100%;padding:11px 12px;background:#0a1626;color:var(--text);border:1px solid #314967;border-radius:12px}
-button{border:0;border-radius:12px;padding:11px 14px;background:#213551;color:var(--text);font-weight:800;cursor:pointer}button.primary{background:linear-gradient(135deg,var(--green),#2a9ddd);color:#03151b}button:disabled{opacity:.45}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}@media(max-width:620px){.row{grid-template-columns:1fr}}
-.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:8px 0 2px}@media(max-width:520px){.quick{grid-template-columns:repeat(2,1fr)}}.quick button{padding:10px 6px}
-.check{display:flex;gap:9px;align-items:flex-start;margin:10px 0;font-size:13px;line-height:1.35}.check input{width:auto;margin-top:2px}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.notice{border-left:4px solid var(--blue);background:#0b192b;border-radius:10px;padding:10px 12px;color:#c9d6e7;font-size:13px;line-height:1.45}.notice.warn{border-left-color:var(--amber)}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}@media(max-width:700px){.kpis{grid-template-columns:repeat(2,1fr)}}.kpi{background:#0b1728;border:1px solid var(--line);border-radius:14px;padding:11px}.kpi b{font-size:19px;display:block}.kpi span{font-size:11px;color:var(--muted)}
-.tickets{display:grid;gap:8px;max-height:560px;overflow:auto;margin-top:12px}.ticket{display:flex;align-items:center;gap:8px;background:#0b1728;border:1px solid var(--line);border-radius:13px;padding:9px}.idx{width:34px;color:var(--muted);font-size:12px}.balls{display:flex;gap:5px;flex-wrap:wrap}.ball{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#1c3553;border:1px solid #3a5e83;font-weight:850;font-size:13px}
-.small{font-size:12px;color:var(--muted);line-height:1.45}.install{display:none}.install.show{display:inline-block}.progress{height:9px;background:#081321;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:12px}.progress i{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--green),var(--blue))}
-footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
+:root{--bg:#07101c;--card:#101c2f;--card2:#0b1728;--line:#263a57;--txt:#eef5ff;--muted:#9cb0ca;--green:#39cc98;--blue:#67aaff;--amber:#f2b85e;--red:#ff8585}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#06101c,#0b1727 55%,#07101c);color:var(--txt);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+.app{max-width:1100px;margin:auto;padding:16px 13px 48px}.hero{padding:16px 3px 12px}.hero h1{margin:0;font-size:clamp(30px,7vw,48px);letter-spacing:-1.4px}.hero p{color:var(--muted);line-height:1.5;margin:7px 0}.badge{display:inline-block;background:#12362f;color:#8ae8c7;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:850;margin-bottom:9px}
+.card{background:rgba(16,28,47,.97);border:1px solid var(--line);border-radius:20px;padding:15px;margin-bottom:14px;box-shadow:0 14px 40px rgba(0,0,0,.24)}h2{margin:0 0 12px;font-size:19px}h3{font-size:15px;margin:16px 0 8px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}@media(max-width:690px){.row{grid-template-columns:1fr}}
+label{display:block;color:var(--muted);font-size:13px;margin:10px 0 6px}input,select,button{font:inherit}input,select{width:100%;background:#091525;border:1px solid #314968;color:var(--txt);border-radius:12px;padding:11px 12px}button{border:0;border-radius:12px;padding:11px 13px;background:#213551;color:var(--txt);font-weight:800;cursor:pointer}button.primary{background:linear-gradient(135deg,var(--green),#2c9fd9);color:#03151b}button:disabled{opacity:.45}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:6px 0 10px}@media(max-width:480px){.quick{grid-template-columns:repeat(2,1fr)}}.check{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.4;margin:10px 0}.check input{width:auto;margin-top:2px}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}.notice{background:#0b192b;border-left:4px solid var(--blue);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.48;color:#cbd8e9}.notice.warn{border-left-color:var(--amber)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.kpi{background:var(--card2);border:1px solid var(--line);border-radius:13px;padding:10px}.kpi b{display:block;font-size:19px}.kpi span{font-size:11px;color:var(--muted)}@media(max-width:680px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.progress{height:9px;background:#081321;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin:12px 0}.progress i{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--green),var(--blue))}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 12px}.tab{background:#15243a;color:#b9c8da}.tab.active{background:#294867;color:#fff}.panel{display:none}.panel.active{display:block}
+.tickets{display:grid;gap:7px;max-height:500px;overflow:auto;margin-top:12px}.ticket{display:flex;align-items:center;gap:7px;background:var(--card2);border:1px solid var(--line);border-radius:13px;padding:8px}.idx{width:34px;font-size:12px;color:var(--muted)}.balls{display:flex;gap:5px;flex-wrap:wrap}.ball{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#1c3553;border:1px solid #3a5e83;font-weight:850;font-size:13px}
+.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:650px;font-size:12px}th,td{border-bottom:1px solid var(--line);padding:8px 7px;text-align:left}th{color:#a9bdd5}.good{color:#8be1bf}.mid{color:#ffd67b}.hotgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-top:10px}@media(max-width:620px){.hotgrid{grid-template-columns:repeat(5,1fr)}}.numstat{background:#0b1728;border:1px solid var(--line);border-radius:10px;padding:8px 4px;text-align:center}.numstat b{font-size:16px}.numstat span{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.small{font-size:12px;color:var(--muted);line-height:1.45}.install{display:none}.install.show{display:inline-block}footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 </style>
 </head>
 <body>
 <div class="app">
 <section class="hero">
-<span class="badge">PWA • installabile • offline</span>
+<span class="badge">v3 • 105 estrazioni • 6 mesi</span>
 <h1>SE90 Lab</h1>
-<p>Genera sestine, confronta più sistemi e conserva sul telefono il set con la copertura matematica migliore.</p>
+<p>Massima copertura delle giocate + confronto retrospettivo con i concorsi dal 13 marzo all'11 settembre 2026.</p>
 </section>
 
 <section class="card">
-<h2>Generatore rapido</h2>
-
+<h2>1. Imposta la giocata</h2>
 <label>Budget (€)</label>
-<div class="quick">
-<button data-budget="5">5 €</button>
-<button data-budget="10">10 €</button>
-<button data-budget="20">20 €</button>
-<button data-budget="30">30 €</button>
+<div class="quick"><button data-b="5">5 €</button><button data-b="10">10 €</button><button data-b="20">20 €</button><button data-b="30">30 €</button></div>
+<div class="row">
+<div><input id="budget" type="number" min="1" max="500" value="20"></div>
+<div><select id="mode"><option value="coverage">Massima copertura — consigliata</option><option value="history">Confronto storico 6 mesi</option><option value="random">Casuale puro</option></select></div>
 </div>
 <div class="row">
-<div><input id="budget" type="number" min="1" max="1000" value="20"></div>
-<div><select id="mode"><option value="best">Miglior copertura</option><option value="coverage">Copertura singola</option><option value="random">Casuale puro</option></select></div>
+<div><label>Sistemi candidati da confrontare</label><select id="tries"><option>20</option><option selected>50</option><option>100</option><option>200</option></select></div>
+<div><label>Obiettivo premi minori</label><select id="target"><option value="spread" selected>Distribuzione ampia (2/3/4)</option><option value="triples">Più terne diverse</option><option value="pairs">Più coppie diverse</option></select></div>
 </div>
-
-<div class="row">
-<div>
-<label>Quanti sistemi confrontare?</label>
-<select id="tries"><option value="10">10</option><option value="25" selected>25</option><option value="50">50</option><option value="100">100</option></select>
-</div>
-<div>
-<label>Peso equilibrio numeri</label>
-<select id="balance"><option value="0.5">Basso</option><option value="1" selected>Medio</option><option value="2">Alto</option></select>
-</div>
-</div>
-
-<label class="check"><input id="antiPopular" type="checkbox" checked><span>Evita pattern molto popolari e sestine composte solo da numeri 1–31. Questo non aumenta la probabilità di estrazione.</span></label>
-
-<div class="actions">
-<button class="primary" id="generate">Genera il sistema migliore</button>
-<button id="copy" disabled>Copia</button>
-<button id="csv" disabled>CSV</button>
-<button id="save" disabled>Salva sul telefono</button>
-<button id="install" class="install">Installa app</button>
-</div>
+<label class="check"><input id="antiPopular" type="checkbox" checked><span>Evita pattern molto popolari (sequenze evidenti e sestine tutte entro 1–31). Non cambia la probabilità di uscita, ma può ridurre la possibilità di condividere un eventuale premio.</span></label>
+<div class="actions"><button class="primary" id="generate">Genera e confronta</button><button id="copy" disabled>Copia</button><button id="csv" disabled>CSV</button><button id="save" disabled>Salva</button><button id="install" class="install">Installa app</button></div>
 <div class="progress"><i id="bar"></i></div>
-<p class="small" id="workNote">Con “Miglior copertura” vengono generati più sistemi e viene scelto quello con meno sovrapposizioni e migliore distribuzione.</p>
+<p class="small" id="status">La modalità consigliata sceglie il sistema con la maggiore copertura combinatoria, senza attribuire poteri predittivi allo storico.</p>
 </section>
 
 <section class="card">
 <div class="kpis">
-<div class="kpi"><b id="count">0</b><span>sestine</span></div>
-<div class="kpi"><b id="odds">—</b><span>probabilità 6</span></div>
-<div class="kpi"><b id="pairs">0</b><span>coppie uniche</span></div>
-<div class="kpi"><b id="score">—</b><span>indice copertura</span></div>
+<div class="kpi"><b id="ncomb">0</b><span>combinazioni</span></div>
+<div class="kpi"><b id="p6">—</b><span>probabilità del 6</span></div>
+<div class="kpi"><b id="upairs">0</b><span>coppie uniche</span></div>
+<div class="kpi"><b id="utriples">0</b><span>terne uniche</span></div>
 </div>
-<div class="tickets" id="tickets"><div class="notice">Scegli il budget e premi <b>Genera il sistema migliore</b>.</div></div>
+<div class="tickets" id="tickets"><div class="notice">Premi <b>Genera e confronta</b>.</div></div>
 </section>
 
-<section class="card">
-<h2>Set salvato</h2>
-<div class="actions">
-<button id="loadSaved">Carica ultimo set</button>
-<button id="clearSaved">Cancella salvataggio</button>
+<div class="tabs">
+<button class="tab active" data-tab="bt">Backtest 6 mesi</button>
+<button class="tab" data-tab="hist">Storico</button>
+<button class="tab" data-tab="math">Probabilità</button>
 </div>
-<p class="small" id="savedInfo">Nessun set caricato.</p>
+
+<section class="card panel active" id="bt">
+<h2>2. Come si sarebbe comportato il sistema</h2>
+<div class="kpis">
+<div class="kpi"><b id="b2">—</b><span>concorsi con almeno un 2</span></div>
+<div class="kpi"><b id="b3">—</b><span>con almeno un 3</span></div>
+<div class="kpi"><b id="b4">—</b><span>con almeno un 4</span></div>
+<div class="kpi"><b id="besthit">—</b><span>miglior risultato storico</span></div>
+</div>
+<p class="small" id="btnote">Il backtest usa 105 concorsi reali. Un buon risultato sul passato non aumenta automaticamente la probabilità della prossima estrazione.</p>
+<div class="tablewrap"><table><thead><tr><th>Concorso</th><th>Data</th><th>Estratti</th><th>Migliore sestina</th><th>Hit</th></tr></thead><tbody id="btrows"></tbody></table></div>
 </section>
 
-<section class="card">
-<div class="notice warn"><b>Nota importante:</b> il programma non prevede i numeri. Tutte le sestine hanno la stessa probabilità di uscire. Il vantaggio del software è organizzare meglio il budget evitando combinazioni troppo simili fra loro. L’unico modo diretto per aumentare la probabilità del 6 è giocare più sestine differenti.</div>
+<section class="card panel" id="hist">
+<h2>3. Analisi descrittiva degli ultimi 6 mesi</h2>
+<p class="small">Frequenze e ritardi descrivono ciò che è già accaduto: non rendono un numero più probabile al prossimo concorso.</p>
+<h3>10 numeri più frequenti</h3><div class="hotgrid" id="hot"></div>
+<h3>10 meno frequenti</h3><div class="hotgrid" id="cold"></div>
+<div class="kpis" style="margin-top:12px">
+<div class="kpi"><b id="hcount">105</b><span>concorsi analizzati</span></div>
+<div class="kpi"><b>13/03</b><span>inizio archivio</span></div>
+<div class="kpi"><b>11/09</b><span>ultima estrazione inclusa</span></div>
+<div class="kpi"><b id="avgfreq">—</b><span>uscite medie per numero</span></div>
+</div>
 </section>
 
-<footer>SE90 Lab è uno strumento indipendente, statistico e didattico. Verifica sempre costi e regole sul sito ufficiale prima di giocare. Il gioco può causare dipendenza.</footer>
+<section class="card panel" id="math">
+<h2>4. Dove aumentano davvero le possibilità</h2>
+<div class="notice warn"><b>Per il 6:</b> con N sestine tutte diverse, la probabilità è N / 622.614.630. A parità di N, nessun algoritmo può rendere il 6 più probabile scegliendo “numeri migliori”.</div>
+<p class="small">L'ottimizzatore può invece diminuire le sovrapposizioni fra le schedine e aumentare la varietà di coppie e terne coperte. Questo è l'obiettivo sensato quando il budget è fisso e si vuole distribuire meglio la possibilità di premi inferiori.</p>
+<div id="budgetMath" class="notice"></div>
+</section>
+
+<footer>Archivio incorporato: concorsi 42–146 del 2026. SE90 Lab è indipendente e non collegato a Sisal/ADM. Verifica sempre i dati ufficiali prima di giocare. Il gioco può causare dipendenza.</footer>
 </div>
 
 <script>
-const TOTAL=622614630;
-const $=id=>document.getElementById(id);
+const HISTORY=[{"n":146,"date":"2026-09-11","nums":[8,13,16,52,64,70]},{"n":145,"date":"2026-09-10","nums":[2,17,39,59,63,89]},{"n":144,"date":"2026-09-08","nums":[23,26,41,52,59,85]},{"n":143,"date":"2026-09-05","nums":[12,24,28,32,37,78]},{"n":142,"date":"2026-09-04","nums":[8,44,60,73,86,89]},{"n":141,"date":"2026-09-03","nums":[8,11,15,60,68,76]},{"n":140,"date":"2026-09-01","nums":[42,47,59,64,67,71]},{"n":139,"date":"2026-08-29","nums":[12,17,45,59,74,77]},{"n":138,"date":"2026-08-28","nums":[4,8,27,62,70,79]},{"n":137,"date":"2026-08-27","nums":[2,27,28,50,75,84]},{"n":136,"date":"2026-08-25","nums":[15,36,62,67,69,70]},{"n":135,"date":"2026-08-22","nums":[2,16,23,31,72,85]},{"n":134,"date":"2026-08-21","nums":[12,25,27,28,39,57]},{"n":133,"date":"2026-08-20","nums":[14,18,26,51,64,71]},{"n":132,"date":"2026-08-18","nums":[10,16,24,25,39,66]},{"n":131,"date":"2026-08-17","nums":[18,24,69,71,73,82]},{"n":130,"date":"2026-08-14","nums":[9,18,20,25,53,90]},{"n":129,"date":"2026-08-13","nums":[2,7,16,29,57,84]},{"n":128,"date":"2026-08-11","nums":[8,19,38,53,66,79]},{"n":127,"date":"2026-08-08","nums":[9,12,55,61,82,85]},{"n":126,"date":"2026-08-07","nums":[1,7,29,32,60,63]},{"n":125,"date":"2026-08-06","nums":[2,11,20,33,74,83]},{"n":124,"date":"2026-08-04","nums":[49,56,58,70,76,78]},{"n":123,"date":"2026-08-01","nums":[8,11,21,24,72,88]},{"n":122,"date":"2026-07-31","nums":[2,6,10,31,39,83]},{"n":121,"date":"2026-07-30","nums":[20,47,75,76,78,89]},{"n":120,"date":"2026-07-28","nums":[1,6,9,43,54,62]},{"n":119,"date":"2026-07-25","nums":[18,19,33,34,61,85]},{"n":118,"date":"2026-07-24","nums":[20,40,53,61,74,79]},{"n":117,"date":"2026-07-23","nums":[2,12,22,34,70,74]},{"n":116,"date":"2026-07-21","nums":[13,14,15,29,38,63]},{"n":115,"date":"2026-07-18","nums":[1,28,52,62,79,86]},{"n":114,"date":"2026-07-17","nums":[7,34,45,64,65,76]},{"n":113,"date":"2026-07-16","nums":[1,15,21,46,52,67]},{"n":112,"date":"2026-07-14","nums":[8,44,49,80,85,88]},{"n":111,"date":"2026-07-11","nums":[6,7,10,47,49,61]},{"n":110,"date":"2026-07-10","nums":[2,3,12,28,63,82]},{"n":109,"date":"2026-07-09","nums":[9,17,20,31,40,79]},{"n":108,"date":"2026-07-07","nums":[3,16,30,53,55,79]},{"n":107,"date":"2026-07-04","nums":[2,37,55,62,72,76]},{"n":106,"date":"2026-07-03","nums":[22,26,30,40,68,86]},{"n":105,"date":"2026-07-02","nums":[4,17,19,23,47,59]},{"n":104,"date":"2026-06-30","nums":[1,7,51,64,78,83]},{"n":103,"date":"2026-06-27","nums":[15,19,36,47,85,90]},{"n":102,"date":"2026-06-26","nums":[1,22,30,45,73,76]},{"n":101,"date":"2026-06-25","nums":[25,27,54,72,73,76]},{"n":100,"date":"2026-06-23","nums":[1,12,17,27,66,84]},{"n":99,"date":"2026-06-20","nums":[14,59,69,71,82,89]},{"n":98,"date":"2026-06-19","nums":[14,18,25,69,81,89]},{"n":97,"date":"2026-06-18","nums":[4,26,39,43,70,87]},{"n":96,"date":"2026-06-16","nums":[4,28,33,35,66,80]},{"n":95,"date":"2026-06-13","nums":[13,23,34,68,87,90]},{"n":94,"date":"2026-06-12","nums":[18,24,42,68,75,83]},{"n":93,"date":"2026-06-11","nums":[7,21,22,40,44,87]},{"n":92,"date":"2026-06-09","nums":[18,36,47,55,73,80]},{"n":91,"date":"2026-06-08","nums":[28,33,51,59,82,87]},{"n":90,"date":"2026-06-06","nums":[2,7,29,68,72,89]},{"n":89,"date":"2026-06-05","nums":[9,25,51,63,73,89]},{"n":88,"date":"2026-06-04","nums":[12,33,43,55,74,75]},{"n":87,"date":"2026-05-30","nums":[8,13,21,39,63,71]},{"n":86,"date":"2026-05-29","nums":[9,42,44,46,85,90]},{"n":85,"date":"2026-05-28","nums":[22,33,36,74,78,86]},{"n":84,"date":"2026-05-26","nums":[7,10,35,41,45,61]},{"n":83,"date":"2026-05-23","nums":[14,29,34,57,59,69]},{"n":82,"date":"2026-05-22","nums":[5,17,65,71,83,87]},{"n":81,"date":"2026-05-21","nums":[1,38,57,58,64,81]},{"n":80,"date":"2026-05-19","nums":[49,57,61,73,79,86]},{"n":79,"date":"2026-05-16","nums":[7,12,60,69,89,90]},{"n":78,"date":"2026-05-15","nums":[5,13,17,28,47,68]},{"n":77,"date":"2026-05-14","nums":[31,56,72,74,84,85]},{"n":76,"date":"2026-05-12","nums":[2,28,31,57,58,59]},{"n":75,"date":"2026-05-09","nums":[9,27,30,42,43,62]},{"n":74,"date":"2026-05-08","nums":[8,16,41,47,51,90]},{"n":73,"date":"2026-05-07","nums":[1,34,48,66,69,73]},{"n":72,"date":"2026-05-05","nums":[24,34,45,55,81,87]},{"n":71,"date":"2026-05-04","nums":[3,14,31,46,61,63]},{"n":70,"date":"2026-05-02","nums":[7,58,60,79,84,86]},{"n":69,"date":"2026-04-30","nums":[6,7,15,44,52,58]},{"n":68,"date":"2026-04-28","nums":[29,42,43,47,57,60]},{"n":67,"date":"2026-04-27","nums":[40,57,62,64,85,87]},{"n":66,"date":"2026-04-24","nums":[6,13,33,37,68,82]},{"n":65,"date":"2026-04-23","nums":[18,24,28,35,56,58]},{"n":64,"date":"2026-04-21","nums":[18,19,40,43,56,77]},{"n":63,"date":"2026-04-18","nums":[11,22,28,33,68,77]},{"n":62,"date":"2026-04-17","nums":[13,27,45,53,57,84]},{"n":61,"date":"2026-04-16","nums":[9,11,12,38,44,54]},{"n":60,"date":"2026-04-14","nums":[3,5,20,27,35,66]},{"n":59,"date":"2026-04-11","nums":[19,28,38,48,77,85]},{"n":58,"date":"2026-04-10","nums":[3,10,13,17,58,90]},{"n":57,"date":"2026-04-09","nums":[2,30,38,63,74,84]},{"n":56,"date":"2026-04-07","nums":[10,16,18,47,50,59]},{"n":55,"date":"2026-04-04","nums":[8,21,29,46,60,81]},{"n":54,"date":"2026-04-03","nums":[28,52,53,64,66,72]},{"n":53,"date":"2026-04-02","nums":[18,24,25,32,36,63]},{"n":52,"date":"2026-03-31","nums":[1,3,39,46,47,61]},{"n":51,"date":"2026-03-28","nums":[9,45,62,67,68,81]},{"n":50,"date":"2026-03-27","nums":[6,22,27,43,58,64]},{"n":49,"date":"2026-03-26","nums":[24,26,39,69,77,80]},{"n":48,"date":"2026-03-24","nums":[6,54,60,64,74,87]},{"n":47,"date":"2026-03-21","nums":[9,26,33,49,51,55]},{"n":46,"date":"2026-03-20","nums":[14,32,45,51,54,87]},{"n":45,"date":"2026-03-19","nums":[19,39,45,54,62,89]},{"n":44,"date":"2026-03-17","nums":[2,13,16,41,53,56]},{"n":43,"date":"2026-03-14","nums":[3,6,33,63,88,89]},{"n":42,"date":"2026-03-13","nums":[3,11,13,20,53,61]}];
+const TOTAL=622614630, nums90=Array.from({length:90},(_,i)=>i+1);
 let tickets=[], deferredPrompt=null;
-const nums90=Array.from({length:90},(_,i)=>i+1);
-const rand=n=>Math.floor(Math.random()*n);
+const $=id=>document.getElementById(id), rnd=n=>Math.floor(Math.random()*n);
 
-function sample(arr,k){
- const a=[...arr];
- for(let i=0;i<k;i++){const j=i+rand(a.length-i);[a[i],a[j]]=[a[j],a[i]]}
- return a.slice(0,k).sort((a,b)=>a-b)
+function sample(arr,k){const a=[...arr];for(let i=0;i<k;i++){const j=i+rnd(a.length-i);[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,k).sort((a,b)=>a-b)}
+function pairs(t){let o=[];for(let i=0;i<6;i++)for(let j=i+1;j<6;j++)o.push(t[i]+'-'+t[j]);return o}
+function triples(t){let o=[];for(let i=0;i<4;i++)for(let j=i+1;j<5;j++)for(let k=j+1;k<6;k++)o.push(t[i]+'-'+t[j]+'-'+t[k]);return o}
+function popular(t){
+ let seq=1,max=1;for(let i=1;i<6;i++){if(t[i]===t[i-1]+1){seq++;max=Math.max(max,seq)}else seq=1}
+ return max>=4 || t.every(n=>n<=31) || new Set(t.map(n=>n%10)).size<=2
 }
-function pairKeys(t){let o=[];for(let i=0;i<6;i++)for(let j=i+1;j<6;j++)o.push(t[i]+'-'+t[j]);return o}
-function patternPopular(t){
- let seq=1,max=1;
- for(let i=1;i<t.length;i++){if(t[i]===t[i-1]+1){seq++;max=Math.max(max,seq)}else seq=1}
- const birthdays=t.every(n=>n<=31);
- const endings=new Set(t.map(n=>n%10)).size<=2;
- return max>=4 || birthdays || endings;
-}
-function randomTicket(){
- let t, tries=0;
- do{t=sample(nums90,6);tries++}while($('antiPopular').checked&&patternPopular(t)&&tries<100);
- return t
-}
-function generateRandom(count){
- const out=[],seen=new Set();
- while(out.length<count){const t=randomTicket(),k=t.join('-');if(!seen.has(k)){seen.add(k);out.push(t)}}
- return out
-}
-function generateCoverage(count){
- const out=[],seen=new Set(),pUse=new Map(),nUse=new Map(nums90.map(n=>[n,0]));
- const candidates=count>100?55:120;
+function ticket(){let t,n=0;do{t=sample(nums90,6);n++}while($('antiPopular').checked&&popular(t)&&n<100);return t}
+function randomSet(count){const out=[],seen=new Set();while(out.length<count){const t=ticket(),k=t.join('-');if(!seen.has(k)){seen.add(k);out.push(t)}}return out}
+
+function coverageSet(count){
+ const out=[],seen=new Set(),pu=new Map(),tu=new Map(),nu=new Map(nums90.map(n=>[n,0]));
+ const cc=count>80?55:110;
+ const target=$('target').value;
  for(let z=0;z<count;z++){
-   let best=null,bestScore=Infinity;
-   for(let c=0;c<candidates;c++){
-     const t=randomTicket(),k=t.join('-');if(seen.has(k))continue;
-     let s=0;
-     for(const p of pairKeys(t)){const u=pUse.get(p)||0;s+=u*12+u*u*6}
-     for(const n of t){const u=nUse.get(n)||0;s+=u*0.8+u*u*0.3}
-     s+=Math.random()*0.01;
-     if(s<bestScore){bestScore=s;best=t}
-   }
-   if(!best){best=randomTicket()}
-   const k=best.join('-'); if(seen.has(k))continue;
-   out.push(best);seen.add(k);
-   best.forEach(n=>nUse.set(n,(nUse.get(n)||0)+1));
-   pairKeys(best).forEach(p=>pUse.set(p,(pUse.get(p)||0)+1));
+  let best=null,bs=Infinity;
+  for(let c=0;c<cc;c++){
+   const t=ticket(),k=t.join('-');if(seen.has(k))continue;
+   let s=0;
+   for(const p of pairs(t)){const u=pu.get(p)||0;s+=u*(target==='pairs'?18:12)+u*u*5}
+   for(const q of triples(t)){const u=tu.get(q)||0;s+=u*(target==='triples'?22:9)+u*u*7}
+   for(const n of t){const u=nu.get(n)||0;s+=u*.6+u*u*.22}
+   s+=Math.random()*.01;if(s<bs){bs=s;best=t}
+  }
+  if(!best)best=ticket();
+  const k=best.join('-');if(seen.has(k)){z--;continue}
+  seen.add(k);out.push(best);best.forEach(n=>nu.set(n,nu.get(n)+1));pairs(best).forEach(p=>pu.set(p,(pu.get(p)||0)+1));triples(best).forEach(q=>tu.set(q,(tu.get(q)||0)+1))
  }
  return out
 }
 function metrics(set){
- const ps=new Map(),freq=new Map(nums90.map(n=>[n,0]));
- set.forEach(t=>{
-   t.forEach(n=>freq.set(n,freq.get(n)+1));
-   pairKeys(t).forEach(p=>ps.set(p,(ps.get(p)||0)+1))
- });
- const uniquePairs=ps.size;
- const repeats=[...ps.values()].reduce((a,v)=>a+Math.max(0,v-1),0);
- const vals=[...freq.values()];
- const mean=set.length*6/90;
- const variance=vals.reduce((a,v)=>a+(v-mean)*(v-mean),0)/90;
- const bal=Number($('balance').value);
- const score=uniquePairs - repeats*2 - variance*bal;
- return {uniquePairs,repeats,variance,score}
+ const ps=new Set(),ts=new Set(),freq=new Map(nums90.map(n=>[n,0]));
+ set.forEach(t=>{pairs(t).forEach(x=>ps.add(x));triples(t).forEach(x=>ts.add(x));t.forEach(n=>freq.set(n,freq.get(n)+1))});
+ const mean=set.length*6/90, variance=[...freq.values()].reduce((a,v)=>a+(v-mean)**2,0)/90;
+ return {pairs:ps.size,triples:ts.size,variance}
 }
-async function buildBest(){
- const budget=Math.max(1,Number($('budget').value)||1);
- const count=Math.floor(budget);
- const mode=$('mode').value;
- $('generate').disabled=true;$('bar').style.width='0%';
- let chosen=null,chosenM=null;
- if(mode==='random'){
-   chosen=generateRandom(count);chosenM=metrics(chosen);$('bar').style.width='100%';
- }else if(mode==='coverage'){
-   chosen=generateCoverage(count);chosenM=metrics(chosen);$('bar').style.width='100%';
- }else{
-   const tries=Number($('tries').value);
-   for(let i=0;i<tries;i++){
-     const s=generateCoverage(count),m=metrics(s);
-     if(!chosen || m.score>chosenM.score){chosen=s;chosenM=m}
-     $('bar').style.width=((i+1)/tries*100)+'%';
-     if(i%4===0) await new Promise(r=>setTimeout(r,0));
-   }
+function hit(a,b){const s=new Set(a);let n=0;b.forEach(x=>{if(s.has(x))n++});return n}
+function backtest(set){
+ let c2=0,c3=0,c4=0,best=0,detail=[];
+ for(const d of HISTORY){
+  let bh=0,bt=null;
+  for(const t of set){const h=hit(t,d.nums);if(h>bh){bh=h;bt=t;if(h===6)break}}
+  if(bh>=2)c2++;if(bh>=3)c3++;if(bh>=4)c4++;best=Math.max(best,bh);detail.push({d,bh,bt})
  }
- tickets=chosen||[];
- render(chosenM||metrics(tickets));
- $('generate').disabled=false
+ return {c2,c3,c4,best,detail}
+}
+function combinedScore(set, mode){
+ const m=metrics(set);
+ let s=m.pairs*1.0+m.triples*1.9-m.variance*3;
+ if(mode==='history'){
+   const b=backtest(set);
+   // Lo storico pesa solo come tie-breaker moderato, per evitare overfitting.
+   s += b.c2*0.15+b.c3*0.8+b.c4*4;
+ }
+ return {score:s,m}
+}
+async function generate(){
+ const budget=Math.max(1,Math.min(500,Number($('budget').value)||1)),count=Math.floor(budget),mode=$('mode').value;
+ const tries=mode==='random'?1:Number($('tries').value);
+ $('generate').disabled=true;$('bar').style.width='0%';
+ let best=null,bestObj=null;
+ for(let i=0;i<tries;i++){
+   const s=mode==='random'?randomSet(count):coverageSet(count);
+   const o=combinedScore(s,mode);
+   if(!best||o.score>bestObj.score){best=s;bestObj=o}
+   $('bar').style.width=((i+1)/tries*100)+'%';
+   if(i%4===0)await new Promise(r=>setTimeout(r,0));
+ }
+ tickets=best||[];render(bestObj?.m||metrics(tickets));$('generate').disabled=false
 }
 function render(m){
- $('count').textContent=tickets.length;
- $('odds').textContent=tickets.length?'1 su '+Math.round(TOTAL/tickets.length).toLocaleString('it-IT'):'—';
- $('pairs').textContent=m.uniquePairs.toLocaleString('it-IT');
- $('score').textContent=Math.round(m.score).toLocaleString('it-IT');
+ $('ncomb').textContent=tickets.length;$('p6').textContent=tickets.length?'1 su '+Math.round(TOTAL/tickets.length).toLocaleString('it-IT'):'—';
+ $('upairs').textContent=m.pairs.toLocaleString('it-IT');$('utriples').textContent=m.triples.toLocaleString('it-IT');
  const box=$('tickets');box.innerHTML='';
- tickets.forEach((t,i)=>{
-   const d=document.createElement('div');d.className='ticket';
-   d.innerHTML='<div class="idx">#'+(i+1)+'</div><div class="balls">'+t.map(n=>'<span class="ball">'+n+'</span>').join('')+'</div>';
-   box.appendChild(d)
- });
+ tickets.forEach((t,i)=>{const d=document.createElement('div');d.className='ticket';d.innerHTML=`<div class="idx">#${i+1}</div><div class="balls">${t.map(n=>`<span class="ball">${n}</span>`).join('')}</div>`;box.appendChild(d)});
  ['copy','csv','save'].forEach(id=>$(id).disabled=!tickets.length);
- $('workNote').textContent=`Coppie ripetute: ${m.repeats}. Varianza distribuzione numeri: ${m.variance.toFixed(2)}.`;
+ const b=backtest(tickets);$('b2').textContent=b.c2;$('b3').textContent=b.c3;$('b4').textContent=b.c4;$('besthit').textContent=b.best+' numeri';
+ $('btrows').innerHTML=b.detail.slice(0,30).map(x=>`<tr><td>${x.d.n}</td><td>${x.d.date}</td><td>${x.d.nums.join(' ')}</td><td>${x.bt?x.bt.join(' '):'—'}</td><td class="${x.bh>=4?'good':x.bh>=3?'mid':''}">${x.bh}</td></tr>`).join('');
+ $('status').textContent=`Sistema scelto tra ${$('mode').value==='random'?1:$('tries').value} candidati. Backtest: almeno un 3 in ${b.c3}/105 concorsi; almeno un 4 in ${b.c4}/105.`;
+ updateMath()
 }
-function copySet(){
- navigator.clipboard.writeText(tickets.map((t,i)=>`${i+1}. ${t.join(' - ')}`).join('\n'))
+function historyStats(){
+ const f=Array(91).fill(0);HISTORY.forEach(d=>d.nums.forEach(n=>f[n]++));
+ const a=nums90.map(n=>({n,v:f[n]}));
+ const hot=[...a].sort((x,y)=>y.v-x.v||x.n-y.n).slice(0,10),cold=[...a].sort((x,y)=>x.v-y.v||x.n-y.n).slice(0,10);
+ const html=x=>x.map(o=>`<div class="numstat"><b>${o.n}</b><span>${o.v} uscite</span></div>`).join('');
+ $('hot').innerHTML=html(hot);$('cold').innerHTML=html(cold);$('avgfreq').textContent=(HISTORY.length*6/90).toFixed(1)
 }
-function csvSet(){
- const text='Combinazione;N1;N2;N3;N4;N5;N6\n'+tickets.map((t,i)=>[i+1,...t].join(';')).join('\n');
- const blob=new Blob([text],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');
- a.href=URL.createObjectURL(blob);a.download='SE90_sistema.csv';a.click();URL.revokeObjectURL(a.href)
+function updateMath(){
+ const n=Math.max(1,Math.floor(Number($('budget').value)||1));
+ const pct=n/TOTAL*100;
+ $('budgetMath').innerHTML=`Con <b>${n} sestine diverse</b>: probabilità del 6 ≈ <b>1 su ${Math.round(TOTAL/n).toLocaleString('it-IT')}</b> (${pct.toExponential(3)}%). Per raddoppiare questa probabilità servono circa il doppio delle sestine, quindi anche circa il doppio del costo.`
 }
-function saveSet(){
- localStorage.setItem('se90_saved',JSON.stringify({date:new Date().toISOString(),budget:$('budget').value,tickets}));
- $('savedInfo').textContent=`Salvato un set da ${tickets.length} sestine.`
-}
-function loadSaved(){
- const x=localStorage.getItem('se90_saved'); if(!x){$('savedInfo').textContent='Nessun set salvato.';return}
- const o=JSON.parse(x);tickets=o.tickets||[];$('budget').value=o.budget||tickets.length;render(metrics(tickets));
- $('savedInfo').textContent=`Caricato set salvato il ${new Date(o.date).toLocaleString('it-IT')}.`
-}
-function clearSaved(){localStorage.removeItem('se90_saved');$('savedInfo').textContent='Salvataggio cancellato.'}
+function copySet(){navigator.clipboard.writeText(tickets.map((t,i)=>`${i+1}. ${t.join(' - ')}`).join('\n'))}
+function csv(){const s='Combinazione;N1;N2;N3;N4;N5;N6\n'+tickets.map((t,i)=>[i+1,...t].join(';')).join('\n');const b=new Blob([s],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='SE90_sistema_v3.csv';a.click();URL.revokeObjectURL(a.href)}
+function save(){localStorage.setItem('se90v3',JSON.stringify({date:new Date().toISOString(),budget:$('budget').value,tickets}))}
 
-document.querySelectorAll('[data-budget]').forEach(b=>b.onclick=()=>{$('budget').value=b.dataset.budget});
-$('generate').onclick=buildBest;$('copy').onclick=copySet;$('csv').onclick=csvSet;$('save').onclick=saveSet;$('loadSaved').onclick=loadSaved;$('clearSaved').onclick=clearSaved;
-
+document.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{$('budget').value=b.dataset.b;updateMath()});
+$('budget').oninput=updateMath;$('generate').onclick=generate;$('copy').onclick=copySet;$('csv').onclick=csv;$('save').onclick=save;
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')});
+historyStats();updateMath();
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('install').classList.add('show')});
 $('install').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('install').classList.remove('show')};
-
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'))}
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'));
 </script>
-</body>
-</html>
+</body></html>
