@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#091423">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>SE90 Lab v6.3 — Vincite Storiche</title>
+<title>SE90 Lab v7 — Motore Evolutivo</title>
 <style>
 :root{--bg:#07101c;--card:#101c2f;--card2:#0b1728;--line:#263a57;--txt:#eef5ff;--muted:#9cb0ca;--green:#39cc98;--blue:#67aaff;--amber:#f2b85e;--red:#ff8585;--violet:#a98bff}
 *{box-sizing:border-box}
@@ -89,14 +89,26 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 .prize-detail{font-size:10px;color:var(--muted);margin-top:3px;max-width:220px;line-height:1.35}
 .prize-missing{font-size:10px;color:var(--amber)}
 
+
+.v7grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media(max-width:760px){.v7grid{grid-template-columns:1fr}}
+.ci{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.stability{font-weight:900}.stable-good{color:#8be1bf}.stable-mid{color:#ffd67b}.stable-low{color:#ff9a9a}
+.frontier{display:grid;gap:7px;margin-top:10px}
+.frontier-row{display:grid;grid-template-columns:65px 1fr 1fr 1fr;gap:7px;align-items:center;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:8px}
+@media(max-width:650px){.frontier-row{grid-template-columns:55px 1fr 1fr}}
+.frontier-row .hide-mobile{display:block}@media(max-width:650px){.frontier-row .hide-mobile{display:none}}
+.stage{font-size:11px;color:var(--muted);margin-top:4px}
+.window-table td,.window-table th{text-align:center}
+
 </style>
 </head>
 <body>
 <div class="app">
 <section class="hero">
-<span class="badge">v6.3 • Vincite storiche • facsimile • auto-history</span>
+<span class="badge">v7 • Genetico + annealing • Monte Carlo adattivo</span>
 <h1>SE90 Lab</h1>
-<p>Ottimizza la copertura con budget fisso e mantiene automaticamente una finestra mobile di almeno 6 mesi di estrazioni ufficiali quando è pubblicata online.</p>
+<p>Motore evolutivo multi-obiettivo: algoritmo genetico, simulated annealing, Monte Carlo adattivo, intervalli di confidenza e stabilità su finestre storiche 6/12/24 mesi.</p>
 </section>
 
 <section class="card">
@@ -113,15 +125,31 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 </select></div>
 </div>
 <div class="row">
-<div><label>Sistemi candidati</label><select id="tries"><option>250</option><option selected>500</option><option>750</option><option>1000</option></select></div>
-<div><label>Iterazioni miglioramento locale</label><select id="localSteps"><option>100</option><option selected>250</option><option>500</option><option>1000</option></select></div>
+<div><label>Popolazione algoritmo genetico</label><select id="populationSize">
+<option value="24">24 — rapida</option><option value="40" selected>40 — consigliata</option><option value="60">60 — profonda</option>
+</select></div>
+<div><label>Generazioni evolutive</label><select id="generations">
+<option value="12">12</option><option value="20" selected>20</option><option value="30">30</option><option value="40">40</option>
+</select></div>
 </div>
 <div class="row">
-<div><label>Estratti Monte Carlo</label><select id="draws"><option value="5000">5.000</option><option value="10000" selected>10.000</option><option value="25000">25.000</option><option value="50000">50.000</option></select></div>
-<div><label>Sistemi casuali di confronto</label><select id="randomN"><option value="50">50</option><option value="100" selected>100</option><option value="200">200</option><option value="300">300</option></select></div>
+<div><label>Simulated annealing sui finalisti</label><select id="annealSteps">
+<option value="200">200 iterazioni</option><option value="500" selected>500 iterazioni</option><option value="1000">1.000 iterazioni</option>
+</select></div>
+<div><label>Monte Carlo finale adattivo</label><select id="draws">
+<option value="25000">25.000</option><option value="50000" selected>50.000</option><option value="100000">100.000</option>
+</select></div>
+</div>
+<div class="row">
+<div><label>Benchmark casuale</label><select id="randomN">
+<option value="100">100 sistemi</option><option value="250" selected>250 sistemi</option><option value="500">500 sistemi</option><option value="1000">1.000 sistemi</option>
+</select></div>
+<div><label>Profondità storica automatica</label><select id="historyDepth">
+<option value="6">6 mesi</option><option value="12">12 mesi</option><option value="24" selected>24 mesi</option>
+</select></div>
 </div>
 
-<label class="check"><input id="historyAssist" type="checkbox"><span>Usa lo storico <b>solo come tie-breaker</b> sul periodo di addestramento. Il periodo più recente resta fuori campione.</span></label>
+<label class="check"><input id="historyAssist" type="checkbox"><span>Usa lo storico solo come <b>tie-breaker debole e cross-validato</b>. Nessuna frequenza o ritardo viene interpretato come previsione.</span></label>
 <label class="check"><input id="antiPopular" type="checkbox" checked><span>Evita pattern molto popolari (sequenze evidenti, tutte date 1–31). Non aumenta la probabilità di uscita.</span></label>
 
 <div class="row">
@@ -137,7 +165,7 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 <button id="install" class="install">Installa app</button>
 </div>
 <div class="progress"><i id="bar"></i></div>
-<p class="small" id="status">Le metriche di copertura sono esatte per il sistema generato; la ricerca del miglior sistema è euristica su un grande insieme di candidati, perché l'ottimo globale sull'intero spazio di 622.614.630 sestine non è realisticamente enumerabile sul telefono.</p>
+<p class="small" id="status">Il motore crea una popolazione di sistemi, li fa evolvere, applica annealing ai migliori e usa Monte Carlo in due stadi. Le metriche di copertura del sistema finale restano esatte.</p><div class="stage" id="stageInfo"></div>
 </section>
 
 <section class="card">
@@ -160,19 +188,21 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 <section class="card">
 <h2>3. Probabilità stimate del sistema</h2>
 <div class="kpis">
-<div class="kpi"><b id="mc2">—</b><span>almeno un 2</span></div>
-<div class="kpi"><b id="mc3">—</b><span>almeno un 3</span></div>
-<div class="kpi"><b id="mc4">—</b><span>almeno un 4</span></div>
-<div class="kpi"><b id="mc5">—</b><span>almeno un 5</span></div>
+<div class="kpi"><b id="mc2">—</b><span>almeno un 2</span><small class="ci" id="ci2">IC95% —</small></div>
+<div class="kpi"><b id="mc3">—</b><span>almeno un 3</span><small class="ci" id="ci3">IC95% —</small></div>
+<div class="kpi"><b id="mc4">—</b><span>almeno un 4</span><small class="ci" id="ci4">IC95% —</small></div>
+<div class="kpi"><b id="mc5">—</b><span>almeno un 5</span><small class="ci" id="ci5">IC95% —</small></div>
 </div>
-<p class="small" id="mcInfo">Stime Monte Carlo; il 6 viene mostrato con probabilità matematica esatta in base al numero di sestine uniche.</p>
+<p class="small" id="mcInfo">Monte Carlo adattivo: campione rapido per i finalisti, campione esteso solo sui migliori. Il 6 resta calcolato esattamente da N/622.614.630.</p>
 </section>
 
 <div class="tabs">
 <button class="tab active" data-tab="comparePanel">Confronto casuale</button>
 <button class="tab" data-tab="validationPanel">Fuori campione</button>
 <button class="tab" data-tab="probPanel">Probabilità 2–6</button>
-<button class="tab" data-tab="historyPanel">Storico 6 mesi</button>
+<button class="tab" data-tab="stabilityPanel">Stabilità 6/12/24m</button>
+<button class="tab" data-tab="budgetPanel">Efficienza budget</button>
+<button class="tab" data-tab="historyPanel">Storico</button>
 </div>
 
 <section class="card panel active" id="comparePanel">
@@ -206,8 +236,34 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 <p class="small">Per una singola sestina le probabilità derivano dalla distribuzione ipergeometrica. Per più sestine sovrapposte, 2/3/4/5 sono stimate con Monte Carlo; per il 6, con sestine tutte diverse, N/622.614.630 è esatto.</p>
 </section>
 
+
+<section class="card panel" id="stabilityPanel">
+<h2>7. Stabilità temporale 6 / 12 / 24 mesi</h2>
+<p class="small">Un sistema è considerato più stabile se il comportamento non dipende da una sola finestra storica. Questi dati restano descrittivi: non trasformano il passato in previsione.</p>
+<div class="tablewrap">
+<table class="window-table">
+<thead><tr><th>Finestra</th><th>Concorsi</th><th>≥2</th><th>≥3</th><th>≥4</th><th>≥5</th></tr></thead>
+<tbody id="windowRows"><tr><td colspan="6">Genera un sistema.</td></tr></tbody>
+</table>
+</div>
+<div class="kpis" style="margin-top:12px">
+<div class="kpi"><b id="stabilityScore">—</b><span>punteggio stabilità</span></div>
+<div class="kpi"><b id="cv3">—</b><span>variabilità tasso ≥3</span></div>
+<div class="kpi"><b id="cv4">—</b><span>variabilità tasso ≥4</span></div>
+<div class="kpi"><b id="availableMonths">—</b><span>mesi disponibili</span></div>
+</div>
+</section>
+
+<section class="card panel" id="budgetPanel">
+<h2>8. Efficienza marginale del budget</h2>
+<p class="small">Confronta budget diversi usando una ricerca rapida e le stesse estrazioni simulate. Serve a vedere quanto cambia la copertura aggiungendo 5 €; non è una raccomandazione a spendere di più.</p>
+<div class="actions"><button id="budgetFrontier" class="primary">Calcola confronto 5–30 €</button></div>
+<div class="progress"><i id="budgetBar"></i></div>
+<div id="frontier" class="frontier"><div class="notice">Premi il pulsante per confrontare 5, 10, 15, 20, 25 e 30 €.</div></div>
+</section>
+
 <section class="card panel" id="historyPanel">
-<h2>7. Storico automatico</h2>
+<h2>9. Storico automatico</h2>
 <p class="small">Quando l'app è pubblicata su GitHub Pages, legge <code>history.json</code> aggiornato automaticamente dall'archivio ufficiale. Se la rete non è disponibile usa l'ultimo storico salvato o il fallback incorporato.</p>
 <div class="kpis">
 <div class="kpi"><b id="historyCount">—</b><span>concorsi caricati</span></div>
@@ -238,7 +294,7 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 <div>
 <label>Periodo</label>
 <select id="historyPeriod">
-<option value="all" selected>Tutti gli ultimi 6 mesi</option>
+<option value="all" selected>Tutto lo storico disponibile</option>
 <option value="test">Solo periodo fuori campione</option>
 <option value="train">Solo periodo train</option>
 </select>
@@ -285,7 +341,7 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 
 
 <section class="card">
-<h2>8. Facsimile schedine stampabili</h2>
+<h2>10. Facsimile schedine stampabili</h2>
 <p class="small">Genera un facsimile non ufficiale con la griglia 1–90 e i 6 numeri selezionati evidenziati. Puoi stamparlo oppure salvarlo in PDF dal browser.</p>
 <div class="print-tools">
 <div>
@@ -329,7 +385,7 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 <div class="notice warn"><b>Limite matematico:</b> nessun algoritmo può rendere una specifica sestina più probabile di un'altra in un'estrazione equa. Questa app prova a usare meglio un budget fissato, soprattutto riducendo sovrapposizioni fra le schedine e misurando il risultato contro sistemi casuali equivalenti.</div>
 </section>
 
-<footer>SE90 Lab v6.3 è uno strumento statistico indipendente. Il motore calcola esattamente la copertura del sistema scelto ma usa ricerca euristica per trovarlo. Verifica sempre regole e dati ufficiali. Il gioco può causare dipendenza.</footer>
+<footer>SE90 Lab v7 è uno strumento statistico indipendente. Il motore calcola esattamente la copertura del sistema scelto ma usa ricerca euristica per trovarlo. Verifica sempre regole e dati ufficiali. Il gioco può causare dipendenza.</footer>
 </div>
 
 <script>
@@ -383,133 +439,290 @@ function backtestSet(set, hist){
  }
  return {n:hist.length,c2,c3,c4,c5,best}
 }
+
+function historyWindow(months){
+ if(!HISTORY.length)return [];
+ const latest=new Date(HISTORY[0].date+'T00:00:00Z');
+ const cutoff=new Date(latest);
+ cutoff.setUTCMonth(cutoff.getUTCMonth()-months);
+ return HISTORY.filter(d=>new Date(d.date+'T00:00:00Z')>=cutoff);
+}
+function rollingFolds(hist, folds=4){
+ if(hist.length<folds*6)return [hist];
+ const asc=[...hist].sort((a,b)=>a.date.localeCompare(b.date));
+ const size=Math.floor(asc.length/folds),out=[];
+ for(let i=0;i<folds;i++){
+   const a=i*size,b=i===folds-1?asc.length:(i+1)*size;
+   out.push(asc.slice(a,b));
+ }
+ return out.filter(x=>x.length);
+}
+function historicalStabilityScore(set){
+ const months=Number($('historyDepth')?.value||24);
+ const hist=historyWindow(months);
+ const folds=rollingFolds(hist,4);
+ if(!folds.length)return 0;
+ const rates=folds.map(f=>{
+   const b=backtestSet(set,f);
+   return {r3:b.n?b.c3/b.n:0,r4:b.n?b.c4/b.n:0};
+ });
+ const avg3=rates.reduce((a,x)=>a+x.r3,0)/rates.length;
+ const avg4=rates.reduce((a,x)=>a+x.r4,0)/rates.length;
+ const var3=rates.reduce((a,x)=>a+(x.r3-avg3)**2,0)/rates.length;
+ const var4=rates.reduce((a,x)=>a+(x.r4-avg4)**2,0)/rates.length;
+ return avg3*0.7+avg4*2.5-Math.sqrt(var3)*0.8-Math.sqrt(var4)*2;
+}
 function candidateScore(set){
  const m=metrics(set);
  let s=coverScore(m);
- if($('historyAssist').checked){
-   const b=backtestSet(set,TRAIN);
-   s += b.c3*0.35 + b.c4*1.8 + b.c5*8;
+ if($('historyAssist').checked)s+=historicalStabilityScore(set)*2.5;
+ return {set,m,score:s};
+}
+function cloneSet(set){return set.map(t=>[...t])}
+function normalizeSet(set,count){
+ const out=[],seen=new Set();
+ for(const t0 of set){
+   const t=[...new Set(t0)].filter(n=>n>=1&&n<=90).sort((a,b)=>a-b);
+   if(t.length!==6)continue;
+   if($('antiPopular').checked&&popular(t))continue;
+   const k=t.join('-');if(seen.has(k))continue;
+   seen.add(k);out.push(t);
+   if(out.length===count)break;
  }
- return {set,m,score:s}
+ while(out.length<count){
+   const t=newTicket(),k=t.join('-');
+   if(!seen.has(k)){seen.add(k);out.push(t)}
+ }
+ return out;
 }
-function mutateSet(set){
- const out=set.map(t=>[...t]);
- const idx=rnd(out.length), t=[...out[idx]];
- let pos=rnd(6), tries=0, n;
- do{n=1+rnd(90);tries++}while(t.includes(n)&&tries<100);
- t[pos]=n;t.sort((a,b)=>a-b);
- if($('antiPopular').checked && popular(t))return out;
- const k=t.join('-');
- for(let i=0;i<out.length;i++)if(i!==idx&&out[i].join('-')===k)return out;
- out[idx]=t;return out
+function mutateSet(set,rate=.18){
+ const out=cloneSet(set);
+ const changes=Math.max(1,Math.round(out.length*rate));
+ for(let c=0;c<changes;c++){
+   const idx=rnd(out.length),t=[...out[idx]],pos=rnd(6);
+   let n,tries=0;
+   do{n=1+rnd(90);tries++}while(t.includes(n)&&tries<100);
+   t[pos]=n;t.sort((a,b)=>a-b);out[idx]=t;
+ }
+ return normalizeSet(out,set.length);
 }
-function localImprove(obj, steps){
- let best=obj;
+function crossover(a,b,count){
+ const pool=[];
+ for(const t of a)if(Math.random()<.55)pool.push(t);
+ for(const t of b)if(Math.random()<.55)pool.push(t);
+ // Introduce some fresh genetic material.
+ while(pool.length<count+3)pool.push(newTicket());
+ return normalizeSet(pool,count);
+}
+function tournament(pop,k=4){
+ let best=null;
+ for(let i=0;i<k;i++){
+   const x=pop[rnd(pop.length)];
+   if(!best||x.score>best.score)best=x;
+ }
+ return best;
+}
+async function evolvePopulation(count,popSize,generations){
+ let pop=[];
+ for(let i=0;i<popSize;i++)pop.push(candidateScore(randomSet(count)));
+ pop.sort((a,b)=>b.score-a.score);
+ for(let g=0;g<generations;g++){
+   const elite=Math.max(3,Math.floor(popSize*.15));
+   const next=pop.slice(0,elite).map(x=>({set:cloneSet(x.set),m:x.m,score:x.score}));
+   while(next.length<popSize){
+     const p1=tournament(pop),p2=tournament(pop);
+     let child=crossover(p1.set,p2.set,count);
+     if(Math.random()<.85)child=mutateSet(child,.08+Math.random()*.18);
+     next.push(candidateScore(child));
+   }
+   pop=next.sort((a,b)=>b.score-a.score);
+   $('bar').style.width=(5+(g+1)/generations*35)+'%';
+   $('stageInfo').textContent=`Evoluzione genetica: generazione ${g+1}/${generations}`;
+   if(g%2===0)await new Promise(r=>setTimeout(r,0));
+ }
+ return pop;
+}
+async function anneal(obj,steps){
+ let cur={...obj,set:cloneSet(obj.set)},best=cur;
+ let temp=Math.max(1,Math.abs(cur.score)*.02);
  for(let i=0;i<steps;i++){
-   const s=mutateSet(best.set),o=candidateScore(s);
-   if(o.score>best.score)best=o;
+   const ns=mutateSet(cur.set,.04+Math.random()*.08),no=candidateScore(ns);
+   const delta=no.score-cur.score;
+   if(delta>0||Math.random()<Math.exp(delta/Math.max(.00001,temp)))cur=no;
+   if(cur.score>best.score)best=cur;
+   temp*=.993;
+   if(i%80===0)await new Promise(r=>setTimeout(r,0));
  }
- return best
+ return best;
 }
 function makeDraws(n){const out=[];for(let i=0;i<n;i++)out.push(sample(nums90,6));return out}
-function estimate(set, draws){
+function estimate(set,draws){
  const sets=set.map(t=>new Set(t));let c2=0,c3=0,c4=0,c5=0;
  for(const d of draws){
   let bh=0;
-  for(const s of sets){let h=0;for(const n of d)if(s.has(n))h++;if(h>bh)bh=h;if(bh===6)break}
+  for(const s of sets){
+   let h=0;for(const n of d)if(s.has(n))h++;
+   if(h>bh)bh=h;if(bh===6)break;
+  }
   if(bh>=2)c2++;if(bh>=3)c3++;if(bh>=4)c4++;if(bh>=5)c5++;
  }
- const n=draws.length;return {n,c2,c3,c4,c5,p2:c2/n,p3:c3/n,p4:c4/n,p5:c5/n}
+ const n=draws.length;
+ return {n,c2,c3,c4,c5,p2:c2/n,p3:c3/n,p4:c4/n,p5:c5/n};
 }
 function objectiveEst(e){
  const p=$('profile').value;
  if(p==='conservative')return e.p2*1.5+e.p3*8+e.p4*20+e.p5*80;
  if(p==='aggressive')return e.p2*.05+e.p3*2+e.p4*90+e.p5*500;
  if(p==='pure')return e.p2+e.p3*4+e.p4*15;
- return e.p2*.3+e.p3*6+e.p4*55+e.p5*250
+ return e.p2*.3+e.p3*6+e.p4*55+e.p5*250;
 }
 function fmtPct(x){return (x*100).toFixed(x<.001?3:2)+'%'}
-function percentile(value, arr){if(!arr.length)return 0;let le=arr.filter(x=>x<=value).length;return le/arr.length*100}
-
+function percentile(value,arr){if(!arr.length)return 0;return arr.filter(x=>x<=value).length/arr.length*100}
+function wilson(k,n,z=1.96){
+ if(!n)return [0,0];
+ const p=k/n,zz=z*z,den=1+zz/n;
+ const center=(p+zz/(2*n))/den;
+ const half=z*Math.sqrt((p*(1-p)+zz/(4*n))/n)/den;
+ return [Math.max(0,center-half),Math.min(1,center+half)];
+}
+function ciText(k,n){const [a,b]=wilson(k,n);return `${fmtPct(a)} – ${fmtPct(b)}`}
+function rankFinalists(items,draws){
+ for(const x of items){
+   x.est=estimate(x.set,draws);
+   x.mcscore=objectiveEst(x.est);
+   x.finalScore=x.mcscore+x.score*.00001;
+ }
+ return items.sort((a,b)=>b.finalScore-a.finalScore);
+}
 async function optimize(){
  const budget=Math.max(1,Math.min(100,Number($('budget').value)||1));
  const lim=Math.max(0,Number($('monthlyLimit').value)||0),spent=Math.max(0,Number($('monthlySpent').value)||0);
- if(lim>0 && spent+budget>lim){
+ if(lim>0&&spent+budget>lim){
    $('status').textContent=`Budget non generato: ${spent} € già registrati + ${budget} € supererebbero il limite mensile di ${lim} €.`;
    return;
  }
- const tries=Number($('tries').value),steps=Number($('localSteps').value),drawN=Number($('draws').value),randomN=Number($('randomN').value);
- $('generate').disabled=true;$('bar').style.width='0%';
+ const popSize=Number($('populationSize').value),gens=Number($('generations').value);
+ const annealSteps=Number($('annealSteps').value),finalDrawN=Number($('draws').value),randomN=Number($('randomN').value);
+ $('generate').disabled=true;$('bar').style.width='2%';
+ try{
+   // 1. Genetic evolution.
+   let pop=await evolvePopulation(budget,popSize,gens);
+   let finalists=pop.slice(0,Math.min(8,pop.length));
 
- // Stage A: candidate generation by exact coverage metrics.
- let top=[];
- for(let i=0;i<tries;i++){
-   const o=candidateScore(randomSet(budget));
-   top.push(o);top.sort((a,b)=>b.score-a.score);if(top.length>8)top.length=8;
-   $('bar').style.width=((i+1)/tries*35)+'%';
-   if(i%12===0)await new Promise(r=>setTimeout(r,0));
+   // 2. Simulated annealing on finalists.
+   const annealed=[];
+   for(let i=0;i<finalists.length;i++){
+     $('stageInfo').textContent=`Simulated annealing: finalista ${i+1}/${finalists.length}`;
+     annealed.push(await anneal(finalists[i],Math.ceil(annealSteps/finalists.length)));
+     $('bar').style.width=(40+(i+1)/finalists.length*15)+'%';
+   }
+
+   // 3. Adaptive MC stage 1 for all finalists.
+   $('stageInfo').textContent='Monte Carlo adattivo: preselezione dei finalisti';
+   const quickN=Math.min(5000,Math.max(2500,Math.round(finalDrawN/10)));
+   const quickDraws=makeDraws(quickN);
+   let ranked=rankFinalists(annealed,quickDraws);
+   const top3=ranked.slice(0,Math.min(3,ranked.length));
+   $('bar').style.width='60%'; await new Promise(r=>setTimeout(r,0));
+
+   // 4. Deep MC shared by top 3.
+   $('stageInfo').textContent=`Monte Carlo profondo: ${finalDrawN.toLocaleString('it-IT')} estrazioni sui migliori`;
+   const deepDraws=makeDraws(finalDrawN);
+   ranked=rankFinalists(top3,deepDraws);
+   const best=ranked[0];
+   $('bar').style.width='72%'; await new Promise(r=>setTimeout(r,0));
+
+   // 5. Random baseline uses a shared moderate sample for feasibility.
+   const benchN=Math.min(3500,Math.max(2000,Math.round(finalDrawN/15)));
+   const benchDraws=makeDraws(benchN),baseScores=[],baseP3=[],baseP4=[];
+   $('stageInfo').textContent=`Benchmark: confronto con ${randomN} sistemi casuali`;
+   for(let i=0;i<randomN;i++){
+     const s=randomSet(budget),e=estimate(s,benchDraws),sc=objectiveEst(e);
+     baseScores.push(sc);baseP3.push(e.p3);baseP4.push(e.p4);
+     $('bar').style.width=(72+(i+1)/randomN*28)+'%';
+     if(i%8===0)await new Promise(r=>setTimeout(r,0));
+   }
+
+   tickets=best.set;lastEstimate=best.est;
+   renderV7(best.m,best.est,baseScores,baseP3,baseP4,finalDrawN,popSize,gens,annealSteps,benchN);
+ }finally{
+   $('generate').disabled=false;
  }
-
- // Stage B: local search on the best candidates.
- let improved=[];
- for(let i=0;i<top.length;i++){
-   improved.push(localImprove(top[i],Math.ceil(steps/top.length)));
-   $('bar').style.width=(35+(i+1)/top.length*15)+'%';
-   await new Promise(r=>setTimeout(r,0));
- }
- improved.sort((a,b)=>b.score-a.score);
-
- // Stage C: same Monte Carlo pool for all finalists.
- const draws=makeDraws(drawN);
- let best=null;
- for(let i=0;i<improved.length;i++){
-   const e=estimate(improved[i].set,draws),fs=objectiveEst(e)+improved[i].score*0.00001;
-   improved[i].est=e;improved[i].finalScore=fs;
-   if(!best||fs>best.finalScore)best=improved[i];
-   $('bar').style.width=(50+(i+1)/improved.length*12)+'%';
-   await new Promise(r=>setTimeout(r,0));
- }
-
- // Stage D: random baseline on same draws.
- const baseScores=[],baseP3=[],baseP4=[];
- for(let i=0;i<randomN;i++){
-   const s=randomSet(budget),e=estimate(s,draws),sc=objectiveEst(e);
-   baseScores.push(sc);baseP3.push(e.p3);baseP4.push(e.p4);
-   $('bar').style.width=(62+(i+1)/randomN*38)+'%';
-   if(i%4===0)await new Promise(r=>setTimeout(r,0));
- }
-
- tickets=best.set;lastEstimate=best.est;
- render(best.m,best.est,baseScores,baseP3,baseP4,drawN,tries,steps);
- $('generate').disabled=false;
 }
-
-function render(m,e,baseScores,baseP3,baseP4,drawN,tries,steps){
+function renderV7(m,e,baseScores,baseP3,baseP4,drawN,popSize,gens,annealSteps,benchN){
  $('ncomb').textContent=tickets.length;
  $('p6').textContent='1 su '+Math.round(TOTAL/tickets.length).toLocaleString('it-IT');
  $('pairUnique').textContent=m.pairs.toLocaleString('it-IT');$('tripleUnique').textContent=m.triples.toLocaleString('it-IT');$('quadUnique').textContent=m.quads.toLocaleString('it-IT');
  $('pairPct').textContent=fmtPct(m.pairs/UPAIRS);$('triplePct').textContent=fmtPct(m.triples/UTRIPLES);$('quadPct').textContent=fmtPct(m.quads/UQUADS);
  $('mc2').textContent=fmtPct(e.p2);$('mc3').textContent=fmtPct(e.p3);$('mc4').textContent=fmtPct(e.p4);$('mc5').textContent=fmtPct(e.p5);
- $('mcInfo').textContent=`Stime su ${drawN.toLocaleString('it-IT')} estrazioni simulate condivise con il benchmark casuale.`;
+ $('ci2').textContent='IC95% '+ciText(e.c2,e.n);$('ci3').textContent='IC95% '+ciText(e.c3,e.n);$('ci4').textContent='IC95% '+ciText(e.c4,e.n);$('ci5').textContent='IC95% '+ciText(e.c5,e.n);
+ $('mcInfo').textContent=`Stima profonda su ${drawN.toLocaleString('it-IT')} estrazioni. Gli intervalli al 95% quantificano il rumore Monte Carlo.`;
  const box=$('tickets');box.innerHTML='';
  tickets.forEach((t,i)=>{const d=document.createElement('div');d.className='ticket';d.innerHTML=`<div class="idx">#${i+1}</div><div class="balls">${t.map(n=>`<span class="ball">${n}</span>`).join('')}</div>`;box.appendChild(d)});
  ['copy','csv','save','previewPrint','printFacsimile'].forEach(id=>$(id).disabled=false);
 
- const myScore=objectiveEst(e),pct=percentile(myScore,baseScores),p3=percentile(e.p3,baseP3),p4=percentile(e.p4,baseP4);
+ const myScore=objectiveEst(estimate(tickets,makeDraws(benchN)));
+ const pct=percentile(myScore,baseScores);
+ const p3=percentile(e.p3,baseP3),p4=percentile(e.p4,baseP4);
  $('percentile').textContent=pct.toFixed(1)+'° percentile';$('percentileBar').style.width=pct+'%';
  $('beat3').textContent=p3.toFixed(1)+'%';$('beat4').textContent=p4.toFixed(1)+'%';
- $('compareNote').textContent=`Confronto contro ${baseScores.length} sistemi casuali dello stesso costo sulle stesse ${drawN.toLocaleString('it-IT')} estrazioni simulate. Un percentile alto indica migliore copertura nel campione simulato, non una garanzia futura.`;
+ $('compareNote').textContent=`Benchmark contro ${baseScores.length} sistemi casuali, con campione condiviso di circa ${benchN.toLocaleString('it-IT')} estrazioni. Il Monte Carlo profondo del sistema finale è separato.`;
 
  const tr=backtestSet(tickets,TRAIN),te=backtestSet(tickets,TEST);
  $('train3').textContent=`${tr.c3}/${tr.n}`;$('test3').textContent=`${te.c3}/${te.n}`;$('train4').textContent=`${tr.c4}/${tr.n}`;$('test4').textContent=`${te.c4}/${te.n}`;
- const r3train=tr.c3/tr.n,r3test=te.c3/te.n;
- $('validationNote').textContent=`Tasso ≥3: train ${(r3train*100).toFixed(1)}%, test ${(r3test*100).toFixed(1)}%. ${$('historyAssist').checked?'Il test recente non è stato usato dal tie-breaker storico.':'Lo storico non ha influenzato la selezione.'}`;
+ const r3train=tr.n?tr.c3/tr.n:0,r3test=te.n?te.c3/te.n:0;
+ $('validationNote').textContent=`Tasso ≥3: train ${(r3train*100).toFixed(1)}%, test ${(r3test*100).toFixed(1)}%. ${$('historyAssist').checked?'Il motore usa solo un tie-breaker storico cross-validato.':'Lo storico non ha influenzato la selezione.'}`;
 
- renderProbTable(e);
- renderHistoryComparison();
- $('status').textContent=`Completato: ${tries} candidati + miglioramento locale (${steps} iterazioni) + Monte Carlo + benchmark casuale. Le coperture coppie/terne/quaterne visualizzate sono conteggi esatti del sistema scelto.`;
+ renderProbTable(e);renderHistoryComparison();renderStability();
+ $('bar').style.width='100%';
+ $('stageInfo').textContent='Ottimizzazione completata.';
+ $('status').textContent=`Motore v7: popolazione ${popSize}, ${gens} generazioni, ${annealSteps} passi annealing, Monte Carlo adattivo e benchmark casuale.`;
 }
-
+function monthsBetween(a,b){
+ const d1=new Date(a+'T00:00:00Z'),d2=new Date(b+'T00:00:00Z');
+ return Math.max(0,(d2.getUTCFullYear()-d1.getUTCFullYear())*12+d2.getUTCMonth()-d1.getUTCMonth());
+}
+function renderStability(){
+ if(!tickets.length)return;
+ const wins=[6,12,24],rows=[],r3=[],r4=[];
+ for(const m of wins){
+   const h=historyWindow(m),b=backtestSet(tickets,h);
+   const p2=b.n?b.c2/b.n:0,p3=b.n?b.c3/b.n:0,p4=b.n?b.c4/b.n:0,p5=b.n?b.c5/b.n:0;
+   if(h.length){r3.push(p3);r4.push(p4)}
+   rows.push(`<tr><td>${m} mesi</td><td>${b.n}</td><td>${fmtPct(p2)}</td><td>${fmtPct(p3)}</td><td>${fmtPct(p4)}</td><td>${fmtPct(p5)}</td></tr>`);
+ }
+ $('windowRows').innerHTML=rows.join('');
+ const sd=x=>{if(!x.length)return 0;const a=x.reduce((p,c)=>p+c,0)/x.length;return Math.sqrt(x.reduce((p,c)=>p+(c-a)**2,0)/x.length)};
+ const s3=sd(r3),s4=sd(r4),score=Math.max(0,100-(s3*250+s4*500));
+ $('stabilityScore').textContent=score.toFixed(0)+'/100';
+ $('stabilityScore').className='stability '+(score>=80?'stable-good':score>=60?'stable-mid':'stable-low');
+ $('cv3').textContent=(s3*100).toFixed(2)+' pp';$('cv4').textContent=(s4*100).toFixed(2)+' pp';
+ $('availableMonths').textContent=HISTORY.length>1?monthsBetween(HISTORY[HISTORY.length-1].date,HISTORY[0].date)+'+':'—';
+}
+async function calculateBudgetFrontier(){
+ const btn=$('budgetFrontier'),bar=$('budgetBar'),box=$('frontier');
+ btn.disabled=true;bar.style.width='0%';box.innerHTML='';
+ try{
+   const budgets=[5,10,15,20,25,30],draws=makeDraws(3000),results=[];
+   for(let bi=0;bi<budgets.length;bi++){
+     const b=budgets[bi];let best=null;
+     for(let i=0;i<24;i++){
+       const o=candidateScore(randomSet(b));
+       if(!best||o.score>best.score)best=o;
+     }
+     best=await anneal(best,80);
+     const e=estimate(best.set,draws);
+     results.push({b,e});
+     bar.style.width=((bi+1)/budgets.length*100)+'%';
+     await new Promise(r=>setTimeout(r,0));
+   }
+   box.innerHTML=results.map((x,i)=>{
+     const prev=i?results[i-1]:null;
+     const dg3=prev?(x.e.p3-prev.e.p3)*100:null,dg4=prev?(x.e.p4-prev.e.p4)*100:null;
+     return `<div class="frontier-row"><b>${x.b} €</b><span>≥3: ${fmtPct(x.e.p3)}${dg3!==null?` <small>(+${dg3.toFixed(2)} pp)</small>`:''}</span><span>≥4: ${fmtPct(x.e.p4)}${dg4!==null?` <small>(+${dg4.toFixed(2)} pp)</small>`:''}</span><span class="hide-mobile">≥5: ${fmtPct(x.e.p5)}</span></div>`;
+   }).join('');
+ }finally{btn.disabled=false}
+}
 
 
 
@@ -637,7 +850,7 @@ function refreshSplits(){
  $('trainCount').textContent=TRAIN.length;
  $('testCount').textContent=TEST.length;
  $('historyLast').textContent=HISTORY[0]?.n ?? '—';
- if(tickets.length)renderHistoryComparison();
+ if(tickets.length){renderHistoryComparison();renderStability();}
 }
 async function loadRemoteHistory(force=false){
  const status=$('historyStatus'), updated=$('historyUpdated');
@@ -672,7 +885,8 @@ async function loadRemoteHistory(force=false){
 }
 
 function singleExact(k){
- return choose(6,k)*choose(84,6-k)/choose(90,6)
+ let s=0;for(let j=k;j<=6;j++)s+=choose(6,j)*choose(84,6-j)/choose(90,6);
+ return s;
 }
 function renderProbTable(e){
  const vals={2:e.p2,3:e.p3,4:e.p4,5:e.p5,6:tickets.length/TOTAL};
@@ -755,6 +969,7 @@ $('printHowMany').onchange=()=>{if(tickets.length)renderPrintPreview()};
 $('printFormat').onchange=()=>{if(tickets.length)renderPrintPreview()};
 $('monthlySpent').value=localStorage.getItem('se90_monthlySpent')||'0';$('monthlyLimit').value=localStorage.getItem('se90_monthlyLimit')||'100';
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')});
+$('budgetFrontier').onclick=calculateBudgetFrontier;
 $('refreshHistory').onclick=()=>loadRemoteHistory(true);
 $('historyFilter').onchange=renderHistoryComparison;
 $('historyPeriod').onchange=renderHistoryComparison;

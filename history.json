@@ -1,7 +1,7 @@
 {
   "updated_at": "2026-09-13T07:30:00Z",
   "source": "https://www.superenalotto.it/archivio-estrazioni",
-  "window": "rolling_6_months",
+  "window": "rolling_up_to_24_months_after_first_automatic_update",
   "draws": [
     {
       "n": 146,

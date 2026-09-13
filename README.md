@@ -1,4 +1,4 @@
-# SE90 Lab v6.3 — Storico automatico + facsimile stampabile
+# SE90 Lab v7 — Motore Evolutivo
 
 Questa versione mantiene `history.json` aggiornato automaticamente dall'archivio ufficiale SuperEnalotto.
 
@@ -50,3 +50,17 @@ Nel confronto storico l'app:
 - calcola totale ipotetico del periodo e miglior concorso.
 
 Le quote sono importi lordi/ufficiali visualizzati dall'archivio del concorso; eventuali aspetti fiscali o di riscossione non sono calcolati dall'app.
+
+
+## Motore evolutivo v7
+La v7 aggiunge:
+- algoritmo genetico con popolazione, selezione a torneo, crossover e mutazioni;
+- simulated annealing sui migliori sistemi;
+- Monte Carlo adattivo: campione rapido per tutti i finalisti e campione profondo solo per i migliori;
+- intervalli di confidenza Wilson al 95% per 2/3/4/5;
+- benchmark fino a 1.000 sistemi casuali equivalenti;
+- stabilità su finestre 6, 12 e 24 mesi;
+- aggiornamento automatico dello storico fino a circa 24 mesi;
+- confronto dell'efficienza marginale dei budget 5–30 €.
+
+La ricerca resta euristica: non esiste un metodo che renda una specifica sestina più probabile in un'estrazione equa.
