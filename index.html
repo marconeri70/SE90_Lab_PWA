@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#091423">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>SE90 Lab v7 — Motore Evolutivo</title>
+<title>SE90 Lab v7.1 — Prepara Giocata</title>
 <style>
 :root{--bg:#07101c;--card:#101c2f;--card2:#0b1728;--line:#263a57;--txt:#eef5ff;--muted:#9cb0ca;--green:#39cc98;--blue:#67aaff;--amber:#f2b85e;--red:#ff8585;--violet:#a98bff}
 *{box-sizing:border-box}
@@ -101,12 +101,23 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 .stage{font-size:11px;color:var(--muted);margin-top:4px}
 .window-table td,.window-table th{text-align:center}
 
+
+.playlist{display:grid;gap:8px;margin-top:12px}
+.playrow{display:grid;grid-template-columns:46px 1fr auto auto;gap:8px;align-items:center;background:var(--card2);border:1px solid var(--line);border-radius:13px;padding:9px}
+@media(max-width:650px){.playrow{grid-template-columns:40px 1fr auto}.playrow .donebtn{grid-column:2/4}}
+.playnums{display:flex;gap:5px;flex-wrap:wrap}
+.playnum{width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:#1c3553;border:1px solid #3a5e83;font-weight:850;font-size:12px}
+.playrow.done{opacity:.62}.playrow.done .playnum{background:#173c31;border-color:#2e8567}
+.progressline{height:12px;background:#081321;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.progressline i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--blue))}
+.play-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+
 </style>
 </head>
 <body>
 <div class="app">
 <section class="hero">
-<span class="badge">v7 • Genetico + annealing • Monte Carlo adattivo</span>
+<span class="badge">v7.1 • Prepara giocata • motore evolutivo</span>
 <h1>SE90 Lab</h1>
 <p>Motore evolutivo multi-obiettivo: algoritmo genetico, simulated annealing, Monte Carlo adattivo, intervalli di confidenza e stabilità su finestre storiche 6/12/24 mesi.</p>
 </section>
@@ -202,6 +213,7 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 <button class="tab" data-tab="probPanel">Probabilità 2–6</button>
 <button class="tab" data-tab="stabilityPanel">Stabilità 6/12/24m</button>
 <button class="tab" data-tab="budgetPanel">Efficienza budget</button>
+<button class="tab" data-tab="playPanel">Prepara giocata</button>
 <button class="tab" data-tab="historyPanel">Storico</button>
 </div>
 
@@ -260,6 +272,27 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 <div class="actions"><button id="budgetFrontier" class="primary">Calcola confronto 5–30 €</button></div>
 <div class="progress"><i id="budgetBar"></i></div>
 <div id="frontier" class="frontier"><div class="notice">Premi il pulsante per confrontare 5, 10, 15, 20, 25 e 30 €.</div></div>
+</section>
+
+
+<section class="card panel" id="playPanel">
+<h2>Prepara giocata</h2>
+<p class="small">Usa questa schermata per trasferire più facilmente le sestine in un sito o app di un concessionario autorizzato. Conferma e pagamento restano manuali nel canale autorizzato.</p>
+<div class="kpis">
+<div class="kpi"><b id="playTotal">0</b><span>sestine generate</span></div>
+<div class="kpi"><b id="playDone">0</b><span>segnate come inserite</span></div>
+<div class="kpi"><b id="playLeft">0</b><span>da inserire</span></div>
+<div class="kpi"><b id="playProgressText">0%</b><span>avanzamento</span></div>
+</div>
+<div class="progressline" style="margin-top:10px"><i id="playProgressBar"></i></div>
+<div class="play-actions">
+<button class="primary" id="copyNext" disabled>Copia prossima</button>
+<button id="copyAll" disabled>Copia tutte</button>
+<button id="resetPlayed" disabled>Azzera spunte</button>
+<a href="https://www.superenalotto.it/dove-si-gioca/online" target="_blank" rel="noopener noreferrer" style="text-decoration:none"><button type="button">Apri canali autorizzati</button></a>
+</div>
+<div id="playList" class="playlist"><div class="notice">Genera prima un sistema.</div></div>
+<p class="small">Le spunte vengono ricordate sul dispositivo finché non premi “Azzera spunte”.</p>
 </section>
 
 <section class="card panel" id="historyPanel">
@@ -385,7 +418,7 @@ footer{font-size:12px;color:#8296af;line-height:1.5;margin:16px 3px}
 <div class="notice warn"><b>Limite matematico:</b> nessun algoritmo può rendere una specifica sestina più probabile di un'altra in un'estrazione equa. Questa app prova a usare meglio un budget fissato, soprattutto riducendo sovrapposizioni fra le schedine e misurando il risultato contro sistemi casuali equivalenti.</div>
 </section>
 
-<footer>SE90 Lab v7 è uno strumento statistico indipendente. Il motore calcola esattamente la copertura del sistema scelto ma usa ricerca euristica per trovarlo. Verifica sempre regole e dati ufficiali. Il gioco può causare dipendenza.</footer>
+<footer>SE90 Lab v7.1 è uno strumento statistico indipendente. Il motore calcola esattamente la copertura del sistema scelto ma usa ricerca euristica per trovarlo. Verifica sempre regole e dati ufficiali. Il gioco può causare dipendenza.</footer>
 </div>
 
 <script>
@@ -659,7 +692,7 @@ function renderV7(m,e,baseScores,baseP3,baseP4,drawN,popSize,gens,annealSteps,be
  $('mcInfo').textContent=`Stima profonda su ${drawN.toLocaleString('it-IT')} estrazioni. Gli intervalli al 95% quantificano il rumore Monte Carlo.`;
  const box=$('tickets');box.innerHTML='';
  tickets.forEach((t,i)=>{const d=document.createElement('div');d.className='ticket';d.innerHTML=`<div class="idx">#${i+1}</div><div class="balls">${t.map(n=>`<span class="ball">${n}</span>`).join('')}</div>`;box.appendChild(d)});
- ['copy','csv','save','previewPrint','printFacsimile'].forEach(id=>$(id).disabled=false);
+ ['copy','csv','save','previewPrint','printFacsimile','copyNext','copyAll','resetPlayed'].forEach(id=>$(id).disabled=false);
 
  const myScore=objectiveEst(estimate(tickets,makeDraws(benchN)));
  const pct=percentile(myScore,baseScores);
@@ -673,7 +706,7 @@ function renderV7(m,e,baseScores,baseP3,baseP4,drawN,popSize,gens,annealSteps,be
  const r3train=tr.n?tr.c3/tr.n:0,r3test=te.n?te.c3/te.n:0;
  $('validationNote').textContent=`Tasso ≥3: train ${(r3train*100).toFixed(1)}%, test ${(r3test*100).toFixed(1)}%. ${$('historyAssist').checked?'Il motore usa solo un tie-breaker storico cross-validato.':'Lo storico non ha influenzato la selezione.'}`;
 
- renderProbTable(e);renderHistoryComparison();renderStability();
+ renderProbTable(e);renderHistoryComparison();renderStability();renderPlayList();
  $('bar').style.width='100%';
  $('stageInfo').textContent='Ottimizzazione completata.';
  $('status').textContent=`Motore v7: popolazione ${popSize}, ${gens} generazioni, ${annealSteps} passi annealing, Monte Carlo adattivo e benchmark casuale.`;
@@ -899,6 +932,37 @@ function renderProbTable(e){
  $('probRows').innerHTML=rows
 }
 
+
+function playStateKey(){return 'se90_play_'+tickets.map(t=>t.join('-')).join('|')}
+function loadPlayState(){try{return new Set(JSON.parse(localStorage.getItem(playStateKey())||'[]').map(Number))}catch(_){return new Set()}}
+function savePlayState(s){try{localStorage.setItem(playStateKey(),JSON.stringify([...s]))}catch(_){}}
+function updatePlayProgress(){
+ if(!tickets.length)return;
+ const s=loadPlayState(),done=[...s].filter(i=>i>=0&&i<tickets.length).length,left=tickets.length-done,p=Math.round(done/tickets.length*100);
+ $('playTotal').textContent=tickets.length;$('playDone').textContent=done;$('playLeft').textContent=left;$('playProgressText').textContent=p+'%';$('playProgressBar').style.width=p+'%';
+}
+function renderPlayList(){
+ const box=$('playList');if(!box)return;
+ if(!tickets.length){box.innerHTML='<div class="notice">Genera prima un sistema.</div>';return}
+ const s=loadPlayState();
+ box.innerHTML=tickets.map((t,i)=>`
+ <div class="playrow ${s.has(i)?'done':''}" data-row="${i}">
+   <div class="idx">#${i+1}</div>
+   <div class="playnums">${t.map(n=>`<span class="playnum">${n}</span>`).join('')}</div>
+   <button class="copyone" data-i="${i}">Copia</button>
+   <button class="donebtn" data-i="${i}">${s.has(i)?'Inserita ✓':'Segna inserita'}</button>
+ </div>`).join('');
+ box.querySelectorAll('.copyone').forEach(b=>b.onclick=async()=>{const i=Number(b.dataset.i);await navigator.clipboard.writeText(tickets[i].join(' - '));});
+ box.querySelectorAll('.donebtn').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.i),x=loadPlayState();x.has(i)?x.delete(i):x.add(i);savePlayState(x);renderPlayList();});
+ updatePlayProgress();
+}
+async function copyNextTicket(){
+ const s=loadPlayState();let i=tickets.findIndex((_,idx)=>!s.has(idx));if(i<0)i=0;
+ if(tickets[i]){await navigator.clipboard.writeText(tickets[i].join(' - '));document.querySelector(`[data-row="${i}"]`)?.scrollIntoView({behavior:'smooth',block:'center'});}
+}
+async function copyAllTickets(){if(tickets.length)await navigator.clipboard.writeText(tickets.map((t,i)=>`${i+1}. ${t.join(' - ')}`).join('\n'))}
+function resetPlayed(){localStorage.removeItem(playStateKey());renderPlayList()}
+
 function selectedPrintTickets(){
  let n=tickets.length;
  const how=$('printHowMany')?.value||'all';
@@ -969,6 +1033,9 @@ $('printHowMany').onchange=()=>{if(tickets.length)renderPrintPreview()};
 $('printFormat').onchange=()=>{if(tickets.length)renderPrintPreview()};
 $('monthlySpent').value=localStorage.getItem('se90_monthlySpent')||'0';$('monthlyLimit').value=localStorage.getItem('se90_monthlyLimit')||'100';
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')});
+$('copyNext').onclick=copyNextTicket;
+$('copyAll').onclick=copyAllTickets;
+$('resetPlayed').onclick=resetPlayed;
 $('budgetFrontier').onclick=calculateBudgetFrontier;
 $('refreshHistory').onclick=()=>loadRemoteHistory(true);
 $('historyFilter').onchange=renderHistoryComparison;

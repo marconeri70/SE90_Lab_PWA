@@ -1,4 +1,4 @@
-# SE90 Lab v7 — Motore Evolutivo
+# SE90 Lab v7.1 — Prepara Giocata
 
 Questa versione mantiene `history.json` aggiornato automaticamente dall'archivio ufficiale SuperEnalotto.
 
@@ -64,3 +64,13 @@ La v7 aggiunge:
 - confronto dell'efficienza marginale dei budget 5–30 €.
 
 La ricerca resta euristica: non esiste un metodo che renda una specifica sestina più probabile in un'estrazione equa.
+
+
+## Prepara giocata
+- copia singola o prossima sestina;
+- copia tutte le combinazioni;
+- spunta le sestine già inserite;
+- mostra avanzamento;
+- apre la pagina ufficiale dei canali online autorizzati.
+
+La conferma della giocata e il pagamento restano manuali nel canale autorizzato.

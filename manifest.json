@@ -1,12 +1,12 @@
 {
-  "name": "SE90 Lab v7 - Motore Evolutivo",
+  "name": "SE90 Lab v7.1 - Prepara Giocata",
   "short_name": "SE90 Lab",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07101c",
   "theme_color": "#091423",
-  "description": "Motore evolutivo 6 su 90 con algoritmo genetico, simulated annealing, Monte Carlo adattivo, storico 24 mesi, benchmark e facsimili.",
+  "description": "Motore evolutivo 6 su 90 con trasferimento assistito delle sestine, storico automatico e facsimili.",
   "icons": [
     {
       "src": "icon-192.png",
